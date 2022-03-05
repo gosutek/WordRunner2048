@@ -1,0 +1,76 @@
+.root {
+    -fx-background-color: transparent;
+}
+
+#new_game_btn {
+    -fx-font-size: 40px;
+}
+
+#offline_mode_btn {
+    -fx-font-size: 40px;
+}
+
+#quit_btn {
+    -fx-font-size: 50px;
+}
+
+#theme_label {
+    -fx-font-size: 40px;
+}
+
+#theme_1_btn {
+    -fx-font-size: 40px;
+}
+
+#theme_2_btn {
+    -fx-font-size: 40px;
+}
+
+#theme_3_btn {
+    -fx-font-size: 40px;
+}
+
+#theme_4_btn {
+    -fx-font-size: 40px;
+}
+
+#back_btn {
+    -fx-font-size: 40px;
+}
+
+#feedback_1 {
+    -fx-font-size: 20px;
+}
+
+#feedback_2 {
+    -fx-font-size: 20px;
+}
+
+#user_input {
+    -fx-font-family: "Fleftex";
+    -fx-text-fill: #ffffff;
+    -fx-background-color: transparent;
+}
+
+.label {
+    -fx-font-size: 20px;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Fleftex";
+    -fx-background-color: transparent;
+}
+
+.button {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Fleftex";
+    -fx-font-weight: bold;
+    -fx-background-color: transparent
+}
+
+.button:hover {
+    -fx-effect: dropshadow( gaussian , rgb(74, 228, 255) , 20, 0.4, 0, 0 );
+}
+
+.vbox {
+    -fx-fill: transparent;
+    -fx-background-color: transparent;
+}
