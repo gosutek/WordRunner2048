@@ -60,6 +60,10 @@
     -fx-background-color: transparent;
 }
 
+#help_text {
+    -fx-font-size: 40px;
+}
+
 
 .label {
     -fx-font-size: 20px;
@@ -90,16 +94,30 @@
     -fx-text-fill: #ffffff;
     -fx-font-family: "Fleftex";
     -fx-background-color: transparent;
+    -fx-alignment: center;
 }
 
 .list-cell:hover {
-    -fx-background-color: #0502af;
+    -fx-effect: innershadow( gaussian , #653fee , 20, 0.7, 0, 0 );
+}
+
+.list-cell:empty:hover {
+    -fx-background-color: transparent;
 }
 
 .list-cell:filled:selected {
-    -fx-text-fill: red;
+    -fx-text-fill: #311e75;
 }
 
 .list-view {
     -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-fill: transparent;
+    -fx-background-color: transparent;
+}
+
+.scroll-bar > .corner {    
+    -fx-background-color: #2c365d ;
 }

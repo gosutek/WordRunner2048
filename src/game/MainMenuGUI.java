@@ -28,6 +28,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.event.ActionEvent;
 import javafx.util.Duration;
 
@@ -186,6 +187,7 @@ public class MainMenuGUI extends Pane{
                 graphics.getChildren().remove(title);
                 buttons.getChildren().removeAll(button_1, button_2, button_3);
                 thisObj.getChildren().add(list);
+                list.setAlignment(Pos.CENTER);
             }
             
         });
@@ -439,7 +441,7 @@ public class MainMenuGUI extends Pane{
                 if (errorMessage != null) {
                     feedback.setText(errorMessage + "\n Aborting...");
                 } else {
-                    feedback.setText("Choosen book: " + subjectRequester.getResults()[1]);
+                    feedback.setText("Chosen book: " + subjectRequester.getResults()[1]);
                     Timeline loadingOnSucceedAnimation = new Timeline(
                         new KeyFrame(Duration.ZERO, new KeyValue(feedback.opacityProperty(), feedback.getOpacity())),
                         new KeyFrame(new Duration(2000), new KeyValue(feedback.opacityProperty(), 0))
