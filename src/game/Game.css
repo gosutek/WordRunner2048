@@ -53,6 +53,13 @@
     -fx-background-color: transparent;
 }
 
+#custom_id_text_field {
+    -fx-font-size : 20px;
+    -fx-font-family: "Fleftex";
+    -fx-text-fill: #ffffff;
+    -fx-background-color: transparent;
+}
+
 
 .label {
     -fx-font-size: 20px;

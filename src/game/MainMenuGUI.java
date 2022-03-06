@@ -20,8 +20,11 @@ import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.Effect;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -177,7 +180,7 @@ public class MainMenuGUI extends Pane{
                 thisObj.gridScene.setEffect(new BoxBlur());
                 graphics.getChildren().remove(title);
                 buttons.getChildren().removeAll(button_1, button_2, button_3, back);
-                startOfflineMode(thisObj);
+                startRandomSession(thisObj);
             }
             
         });
@@ -228,6 +231,18 @@ public class MainMenuGUI extends Pane{
 
         feedback.setOpacity(0);
 
+        Label customIDLabel = new Label("Enter custom ID:");
+        TextField customIDTextField = new TextField();
+        customIDTextField.setPromptText("OL76837W");
+        customIDTextField.setPrefWidth(1500);
+        customIDTextField.setId("custom_id_text_field");
+
+        HBox customIDBox = new HBox();
+        customIDBox.getChildren().addAll(customIDLabel, customIDTextField);
+        customIDBox.setTranslateX(windowWidth / 2 - windowWidth / 4);
+        customIDBox.setTranslateY(500);
+        customIDBox.setOpacity(0);
+
         Label themeLabel = new Label("Please select a theme");
         themeLabel.setTranslateX(windowWidth / 2 - windowWidth / 5);
         themeLabel.setTranslateY(375);
@@ -245,7 +260,7 @@ public class MainMenuGUI extends Pane{
         this.button_5 = new CustomButton("Custom", windowWidth / 2 - windowWidth / 10, 2000);
 
 
-        buttons.getChildren().addAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back, feedback);
+        buttons.getChildren().addAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back, feedback, customIDBox);
 
         button_1.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -299,10 +314,31 @@ public class MainMenuGUI extends Pane{
             
         });
 
+        button_5.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent arg0) {
+                customIDBox.setOpacity(1);
+                buttons.getChildren().removeAll(themeLabel, button_1, button_2, button_3, button_4, button_5);
+                customIDTextField.getParent().requestFocus();
+                customIDTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+                    @Override
+                    public void handle(KeyEvent arg0) {
+                        if (arg0.getCode() == KeyCode.ENTER) {
+                            startCustomSession(thisObj, "/works/" + customIDTextField.getText(), customIDBox);
+                        }
+                    }
+                    
+                });
+            }
+        });
+
         back.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent arg0) {
+                customIDBox.setOpacity(0);
                 buttons.getChildren().removeAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back);
                 button_1.revertToDefault();
                 button_2.revertToDefault();
@@ -434,7 +470,7 @@ public class MainMenuGUI extends Pane{
 
     }
 
-    private void startOfflineMode(MainMenuGUI thisObj) {
+    private void startRandomSession(MainMenuGUI thisObj) {
 
         File directory = new File("./medialab");
         File[] dirArr = directory.listFiles();
@@ -478,6 +514,48 @@ public class MainMenuGUI extends Pane{
             @Override
             public void handle(WorkerStateEvent evt) {
 
+            }
+        });
+
+    }
+
+    private void startCustomSession(MainMenuGUI thisObj, String workKey, HBox customIDBox) {
+
+        Task<SessionGUI> customTask = new Task<SessionGUI>() {
+
+            @Override
+            protected SessionGUI call() throws Exception {
+                SessionGUI sessionGUI;
+                Dictionary dictionary;
+                try {
+                    System.out.println(workKey);
+                    dictionary = new Dictionary(workKey);
+                    sessionGUI = new SessionGUI(dictionary);
+                    sessionGUI.setViewOrder(-1);
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                    sessionGUI = null;
+                }
+                return sessionGUI;
+            }
+        };
+
+        Thread customThread = new Thread(customTask);
+        customThread.setDaemon(true);
+        customThread.start();
+
+        customTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+            @Override
+            public void handle(WorkerStateEvent t) {
+                graphics.getChildren().remove(title);
+                buttons.getChildren().removeAll(customIDBox, back);
+                thisObj.getChildren().add(customTask.getValue());
+            }
+        });
+        customTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent evt) {
             }
         });
 
