@@ -62,10 +62,10 @@
 }
 
 .button {
-    -fx-font-size: 15px;
+    -fx-font-size: 40px;
     -fx-text-fill: #ffffff;
     -fx-font-family: "Fleftex";
-    -fx-font-weight: bold;
+    -fx-font-weight: bolder;
     -fx-background-color: transparent
 }
 

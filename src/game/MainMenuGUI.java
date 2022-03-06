@@ -41,8 +41,7 @@ public class MainMenuGUI extends Pane{
     private final int CELL_SIZE = 100;
 
     private CustomGraphics title, press_start;
-    private VBox button_1_box, button_2_box;
-    private Button button_1, button_2, button_3, button_4, back;
+    private CustomButton button_1, button_2, button_3, button_4, button_5, back;
     private SubScene gridScene;
     private Group graphics, buttons;
     private Dictionary activeDictionary;
@@ -118,9 +117,9 @@ public class MainMenuGUI extends Pane{
 
         Timeline newGameAnimation = new Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(button_1.translateYProperty(), button_1.getTranslateY())),
-            new KeyFrame(new Duration(125), new KeyValue(button_1.translateYProperty(), 400)) ,
-            new KeyFrame(new Duration(125), new KeyValue(button_2.translateYProperty(), button_2.getTranslateY())),
-            new KeyFrame(new Duration(250), new KeyValue(button_2.translateYProperty(), 550))
+            new KeyFrame(new Duration(200), new KeyValue(button_1.translateYProperty(), 400)) ,
+            new KeyFrame(new Duration(200), new KeyValue(button_2.translateYProperty(), button_2.getTranslateY())),
+            new KeyFrame(new Duration(400), new KeyValue(button_2.translateYProperty(), 550))
         );
 
         newGameAnimation.play();
@@ -130,19 +129,11 @@ public class MainMenuGUI extends Pane{
         this.gridScene.setEffect(null);
         this.buttons = new Group();
 
-        this.button_1 = new Button("New Game");
-        button_1.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 300, 300, 0.8));
-        button_1.setContentDisplay(ContentDisplay.CENTER);
-        button_1.setTranslateX(windowWidth / 2 - windowWidth / 10);
-        button_1.setTranslateY(2000);
-        button_1.setId("new_game_btn");
+        this.button_1 = new CustomButton("New Game", windowWidth / 2 - windowWidth / 10, 2000);
+        //button_1.setId("new_game_btn");
 
-        this.button_2 = new Button("Quit");
-        button_2.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 300, 300, 0.8));
-        button_2.setContentDisplay(ContentDisplay.CENTER);
-        button_2.setTranslateX(windowWidth / 2 - windowWidth / 9.8);
-        button_2.setTranslateY(2000);
-        button_2.setId("quit_btn");
+        this.button_2 = new CustomButton("Quit", windowWidth / 2 - windowWidth / 9.8, 2000);
+        //button_2.setId("quit_btn");
 
         buttons.getChildren().addAll(button_1, button_2);
         this.getChildren().add(buttons);
@@ -160,54 +151,74 @@ public class MainMenuGUI extends Pane{
 
             @Override
             public void handle(MouseEvent arg0) {
-                buttons.getChildren().removeAll(button_1_box, button_2_box);
-                themeFadeInAnimation();
+                buttons.getChildren().removeAll(button_1, button_2);
+                createNewGameButtons();
+                newGameMenuAnimation();
             }
             
         });
-
-        /* offline_mode_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent arg0) {
-                thisObj.gridScene.setEffect(new BoxBlur());
-                startOfflineMode(thisObj, mainMenuBox, offline_mode_box, quit_box);
-            }
-            
-        }); */
 
     }
 
-    private void themeFadeInAnimation() {
+    private void createNewGameButtons() {
+        button_1.setText("Random");
+        button_1.setTranslateY(2000);
+        button_2.setText("Load");
+        button_2.setTranslateY(2000);
 
-        button_3.setOpacity(1);
-        button_4.setOpacity(1);
-        back.setOpacity(1);
+        this.button_3 = new CustomButton("Download", windowWidth / 2 - windowWidth / 10, 2000);
 
-        this.gridScene.setEffect(new BoxBlur());
+        this.back = new CustomButton("Back", windowWidth / 2 - windowWidth / 10, 2000);
 
-        Timeline themeAnimation = new Timeline(
-            new KeyFrame(Duration.ZERO, new KeyValue(button_1.translateYProperty(), button_1.getTranslateY())),
-            new KeyFrame(new Duration(125), new KeyValue(button_1.translateYProperty(), 0)),
-            new KeyFrame(new Duration(125), new KeyValue(button_2.translateYProperty(), button_2.getTranslateY())),
-            new KeyFrame(new Duration(250), new KeyValue(button_2.translateYProperty(), 125)),
-            new KeyFrame(new Duration(250), new KeyValue(button_3.translateYProperty(), button_3.getTranslateY())),
-            new KeyFrame(new Duration(375), new KeyValue(button_3.translateYProperty(), 250)),
-            new KeyFrame(new Duration(375), new KeyValue(button_4.translateYProperty(), button_4.getTranslateY())),
-            new KeyFrame(new Duration(500), new KeyValue(button_4.translateYProperty(), 375)),
-            new KeyFrame(new Duration(500), new KeyValue(back.translateYProperty(), back.getTranslateY())),
-            new KeyFrame(new Duration(625), new KeyValue(back.translateYProperty(), 500))
-        );
+        buttons.getChildren().addAll(button_1, button_2, button_3, back);
 
-        themeAnimation.play();
-        themeAnimation.setOnFinished(new EventHandler<ActionEvent>() {
-
+        button_1.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(ActionEvent arg0) {
-                createThemeButtons();
+            public void handle(MouseEvent arg0) {
+                thisObj.gridScene.setEffect(new BoxBlur());
+                graphics.getChildren().remove(title);
+                buttons.getChildren().removeAll(button_1, button_2, button_3, back);
+                startOfflineMode(thisObj);
             }
             
         });
+
+        button_3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent arg0) {
+                buttons.getChildren().removeAll(button_1, button_2, button_3, back);
+                createThemeButtons();
+                downloadDictionaryAnimation();
+                
+            }
+        });
+
+        back.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent arg0) {
+                buttons.getChildren().removeAll(button_1, button_2, button_3, back);
+                createMainMenuButtons();
+                mainMenuFadeInAnimation();
+            }
+        });
+    }
+
+    private void newGameMenuAnimation() {
+
+        this.gridScene.setEffect(new BoxBlur());
+
+        Timeline newGameAnimation = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(button_1.translateYProperty(), button_1.getTranslateY())),
+            new KeyFrame(new Duration(150), new KeyValue(button_1.translateYProperty(), 350)),
+            new KeyFrame(new Duration(150), new KeyValue(button_2.translateYProperty(), button_2.getTranslateY())),
+            new KeyFrame(new Duration(300), new KeyValue(button_2.translateYProperty(), 475)),
+            new KeyFrame(new Duration(300), new KeyValue(button_3.translateYProperty(), button_3.getTranslateY())),
+            new KeyFrame(new Duration(450), new KeyValue(button_3.translateYProperty(), 600)),
+            new KeyFrame(new Duration(450), new KeyValue(back.translateYProperty(), back.getTranslateY())),
+            new KeyFrame(new Duration(600), new KeyValue(back.translateYProperty(), 725))
+        );
+
+        newGameAnimation.play();
 
     }
 
@@ -226,60 +237,31 @@ public class MainMenuGUI extends Pane{
         VBox feedbackBox = new VBox(10);
 
         Label themeLabel = new Label("Please select a theme");
-        themeLabel.setTranslateX(button_1.getTranslateX() - 50);
-        themeLabel.setTranslateY(button_1.getTranslateY() + 10);
+        themeLabel.setTranslateX(windowWidth / 2 - windowWidth / 5);
+        themeLabel.setTranslateY(375);
         themeLabel.setId("theme_label");
 
-        VBox theme_1_box = new VBox();
-        Button theme_1_btn = new Button("Sci-Fi");
-        theme_1_btn.setId("theme_1_btn");
+        button_1.setText("Sci-Fi");
+        button_1.setTranslateY(2000);
+        button_2.setText("Mystery");
+        button_2.setTranslateY(2000);
+        button_3.setText("Horror");
+        button_3.setTranslateY(2000);
 
-        VBox theme_2_box = new VBox();
-        Button theme_2_btn = new Button("Mystery");
-        theme_2_btn.setId("theme_2_btn");
+        this.button_4 = new CustomButton("Fantasy", windowWidth / 2 - windowWidth / 10, 2000);
 
-        VBox theme_3_box = new VBox();
-        Button theme_3_btn = new Button("Horror");
-        theme_3_btn.setId("theme_3_btn");
-
-        VBox theme_4_box = new VBox();
-        Button theme_4_btn = new Button("Fantasy");
-        theme_4_btn.setId("theme_4_btn");
-
-        VBox back_box = new VBox();
-        Button back_btn = new Button("Back");
-        back_btn.setId("back_btn");
-
-        theme_1_box.getChildren().add(theme_1_btn);
-        theme_1_box.setTranslateX(button_1.getTranslateX() + 115);
-        theme_1_box.setTranslateY(button_1.getTranslateY() + 97);
-
-        theme_2_box.getChildren().add(theme_2_btn);
-        theme_2_box.setTranslateX(button_2.getTranslateX() + 115);
-        theme_2_box.setTranslateY(button_2.getTranslateY() + 97);
-
-        theme_3_box.getChildren().add(theme_3_btn);
-        theme_3_box.setTranslateX(button_3.getTranslateX() + 115);
-        theme_3_box.setTranslateY(button_3.getTranslateY() + 97);
-
-        theme_4_box.getChildren().add(theme_4_btn);
-        theme_4_box.setTranslateX(button_4.getTranslateX() + 115);
-        theme_4_box.setTranslateY(button_4.getTranslateY() + 97);
-
-        back_box.getChildren().add(back_btn);
-        back_box.setTranslateX(back.getTranslateX() + 115);
-        back_box.setTranslateY(back.getTranslateY() + 97);
+        this.button_5 = new CustomButton("Custom", windowWidth / 2 - windowWidth / 10, 2000);
 
         feedbackBox.getChildren().addAll(feedback_1, feedback_2);
 
-        buttons.getChildren().addAll(themeLabel, theme_1_box, theme_2_box, theme_3_box, theme_4_box, back_box);
+        buttons.getChildren().addAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back);
 
-        theme_1_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        button_1.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent arg0) {
                 graphics.getChildren().removeAll(button_1, button_2, button_3, button_4, back);
-                buttons.getChildren().removeAll(themeLabel, theme_1_box, theme_2_box, theme_3_box, theme_4_box, back_box);
+                /* buttons.getChildren().removeAll(themeLabel, theme_1_box, theme_2_box, theme_3_box, theme_4_box, back_box); */
                 
                 loadingSubject(new SubjectRequester(), new WorksRequester(), "science-fiction", feedbackBox, feedback_1, feedback_2);
                 setSelectedDictionary();
@@ -288,12 +270,12 @@ public class MainMenuGUI extends Pane{
             
         });
 
-        theme_2_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        button_2.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent arg0) {
                 graphics.getChildren().removeAll(button_1, button_2, button_3, button_4, back);
-                buttons.getChildren().removeAll(themeLabel, theme_1_box, theme_2_box, theme_3_box, theme_4_box, back_box);
+                /* buttons.getChildren().removeAll(themeLabel, theme_1_box, theme_2_box, theme_3_box, theme_4_box, back_box); */
                 
                 loadingSubject(new SubjectRequester(), new WorksRequester(), "mystery", feedbackBox, feedback_1, feedback_2);
                 setSelectedDictionary();
@@ -302,12 +284,12 @@ public class MainMenuGUI extends Pane{
             
         });
 
-        theme_3_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        button_3.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent arg0) {
                 graphics.getChildren().removeAll(button_1, button_2, button_3, button_4, back);
-                buttons.getChildren().removeAll(themeLabel, theme_1_box, theme_2_box, theme_3_box, theme_4_box, back_box);
+                /* buttons.getChildren().removeAll(themeLabel, theme_1_box, theme_2_box, theme_3_box, theme_4_box, back_box); */
                 
                 loadingSubject(new SubjectRequester(), new WorksRequester(), "horror", feedbackBox, feedback_1, feedback_2);
                 setSelectedDictionary();
@@ -316,12 +298,12 @@ public class MainMenuGUI extends Pane{
             
         });
 
-        theme_4_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        button_4.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent arg0) {
                 graphics.getChildren().removeAll(button_1, button_2, button_3, button_4, back);
-                buttons.getChildren().removeAll(themeLabel, theme_1_box, theme_2_box, theme_3_box, theme_4_box, back_box);
+                /* buttons.getChildren().removeAll(themeLabel, theme_1_box, theme_2_box, theme_3_box, theme_4_box, back_box); */
                 
                 loadingSubject(new SubjectRequester(), new WorksRequester(), "fantasy", feedbackBox, feedback_1, feedback_2);
                 setSelectedDictionary();
@@ -330,18 +312,54 @@ public class MainMenuGUI extends Pane{
             
         });
 
-        back_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        back.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent arg0) {
-                button_4.setOpacity(0);
-                back.setOpacity(0);
-                buttons.getChildren().removeAll(themeLabel, theme_1_box, theme_2_box, theme_3_box, theme_4_box, back_box);
-                mainMenuFadeInAnimation();
+                buttons.getChildren().removeAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back);
+                button_1.revertToDefault();
+                button_2.revertToDefault();
+                button_3.revertToDefault();
+                button_4.revertToDefault();
+                button_5.revertToDefault();
+                createNewGameButtons();
+                newGameMenuAnimation();
             }
             
         });
+    }
 
+    private void downloadDictionaryAnimation() {
+
+        Timeline downloadDictionaryTimeline = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(button_1.translateYProperty(), button_1.getTranslateY())),
+            new KeyFrame(new Duration(100), new KeyValue(button_1.translateYProperty(), 475)),
+            new KeyFrame(Duration.ZERO, new KeyValue(button_1.translateXProperty(), button_1.getTranslateX())),
+            new KeyFrame(new Duration(100), new KeyValue(button_1.translateXProperty(), 0)),
+
+            new KeyFrame(new Duration(100), new KeyValue(button_2.translateYProperty(), button_2.getTranslateY())),
+            new KeyFrame(new Duration(200), new KeyValue(button_2.translateYProperty(), 475)),
+            new KeyFrame(new Duration(100), new KeyValue(button_2.translateXProperty(), button_2.getTranslateX())),
+            new KeyFrame(new Duration(200), new KeyValue(button_2.translateXProperty(), 400)),
+
+            new KeyFrame(new Duration(200), new KeyValue(button_3.translateYProperty(), button_3.getTranslateY())),
+            new KeyFrame(new Duration(300), new KeyValue(button_3.translateYProperty(), 475)),
+            new KeyFrame(new Duration(200), new KeyValue(button_3.translateXProperty(), button_3.getTranslateX())),
+            new KeyFrame(new Duration(300), new KeyValue(button_3.translateXProperty(), 800)),
+
+            new KeyFrame(new Duration(300), new KeyValue(button_4.translateYProperty(), button_4.getTranslateY())),
+            new KeyFrame(new Duration(400), new KeyValue(button_4.translateYProperty(), 475)),
+            new KeyFrame(new Duration(300), new KeyValue(button_4.translateXProperty(), button_4.getTranslateX())),
+            new KeyFrame(new Duration(400), new KeyValue(button_4.translateXProperty(), 1200)),
+
+            new KeyFrame(new Duration(400), new KeyValue(button_5.translateYProperty(), button_5.getTranslateY())),
+            new KeyFrame(new Duration(500), new KeyValue(button_5.translateYProperty(), 600)),
+
+            new KeyFrame(new Duration(400), new KeyValue(back.translateYProperty(), back.getTranslateY())),
+            new KeyFrame(new Duration(500), new KeyValue(back.translateYProperty(), 725))
+        );
+
+        downloadDictionaryTimeline.play();
     }
 
     private void loadingSubject(SubjectRequester subjectRequester, WorksRequester worksRequester, String subject, VBox feedbackBox, Label feedback_1, Label feedback_2) {
@@ -384,13 +402,13 @@ public class MainMenuGUI extends Pane{
                 feedback_1.setText("Problem connecting to openlibrary.org");
                 feedback_2.setText("");
                 graphics.getChildren().addAll(button_1, button_2, button_3, button_4, back);
-                themeFadeInAnimation();
+                newGameMenuAnimation();
             }
         });
 
     }
 
-    private void startOfflineMode(MainMenuGUI thisObj, VBox new_game_box, VBox offline_mode_box, VBox quit_box) {
+    private void startOfflineMode(MainMenuGUI thisObj) {
 
         File directory = new File("./medialab");
         File[] dirArr = directory.listFiles();
@@ -422,8 +440,6 @@ public class MainMenuGUI extends Pane{
 
             @Override
             public void handle(WorkerStateEvent t) {
-                graphics.getChildren().removeAll(button_1, button_2, button_3);
-                buttons.getChildren().removeAll(new_game_box, offline_mode_box, quit_box);
                 thisObj.getChildren().add(offlineTask.getValue());
             }
         });
