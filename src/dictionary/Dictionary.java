@@ -47,6 +47,7 @@ public class Dictionary {
             }
         } else {
             dictionaryContents = readExistingDictionary(dictionaryFile);
+            numberOfWords = dictionaryContents.length;
         }
 
     }

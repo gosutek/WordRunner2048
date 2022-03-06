@@ -231,7 +231,7 @@ public class MainMenuGUI extends Pane{
 
         feedback.setOpacity(0);
 
-        Label customIDLabel = new Label("Enter custom ID:");
+        Label customIDLabel = new Label("Enter custom ID(ENTER):");
         TextField customIDTextField = new TextField();
         customIDTextField.setPromptText("OL76837W");
         customIDTextField.setPrefWidth(1500);
@@ -528,7 +528,6 @@ public class MainMenuGUI extends Pane{
                 SessionGUI sessionGUI;
                 Dictionary dictionary;
                 try {
-                    System.out.println(workKey);
                     dictionary = new Dictionary(workKey);
                     sessionGUI = new SessionGUI(dictionary);
                     sessionGUI.setViewOrder(-1);

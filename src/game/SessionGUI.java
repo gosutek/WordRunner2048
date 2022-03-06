@@ -83,7 +83,7 @@ public class SessionGUI extends GridPane {
         wordCountLabel = new Label("Remaining words: " + Integer.toString(wordCount));
         scoreLabel = new Label("Score: " + Integer.toString(score));
         percentageLabel = new Label("Correct word %: " + Double.toString(percentage));
-        inputLabel = new Label("Input:");
+        inputLabel = new Label("Input(ENTER):");
         solutionLabel = new Label(session.getHiddenWord().toString());
         solutionLabel.setOpacity(0);
 
