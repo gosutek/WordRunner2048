@@ -96,7 +96,7 @@ public class MainMenuGUI extends Pane{
 
         Timeline titleFadeOut = new Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(press_start.translateXProperty(), press_start.getTranslateX())),
-            new KeyFrame(new Duration(500), new KeyValue(press_start.translateXProperty(), -3500))
+            new KeyFrame(new Duration(250), new KeyValue(press_start.translateXProperty(), -3500))
         );
 
         titleFadeOut.play();
