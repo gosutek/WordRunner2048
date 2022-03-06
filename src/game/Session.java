@@ -32,8 +32,8 @@ public class Session {
         }
     }
 
-    protected Word getGuessWord() {
-        return guessWord;
+    protected Word getHiddenWord() {
+        return hiddenWord;
     }
 
     void calcProb() {
@@ -52,8 +52,8 @@ public class Session {
             mapProbs.replaceAll((key, value) -> value / candidateWords.size()); // Divide occurance by the number of candidate words = probability of the letter
             probs.add(mapProbs);
         }
-        probs.forEach(elem -> System.out.println(elem.values()));
-        probs.forEach(elem -> System.out.println(elem.keySet()));
+        //probs.forEach(elem -> System.out.println(elem.values()));
+        //probs.forEach(elem -> System.out.println(elem.keySet()));
     }
     /*
      * Method that updates the candidate set, based on the users chosen letter at a posistion(pos).
@@ -83,6 +83,17 @@ public class Session {
         }
     }
 
+    public String[] getCandidateLetters(int pos) {
+        Object[] candidateLettersObj = probs.get(pos).keySet().toArray();
+        String[] candidateLettersArr = new String[candidateLettersObj.length];
+        int idx = 0;
+        for (Object elem : probs.get(pos).keySet().toArray()) {
+            candidateLettersArr[idx] = elem.toString();
+            idx++;
+        }
+        return candidateLettersArr;
+    }
+
     void play() {
         String input = new String();
         Integer pos;
@@ -92,6 +103,7 @@ public class Session {
         System.out.println(candidateWords);
         while(!guessWord.equals(hiddenWord)) {
             calcProb();
+            getCandidateLetters(0);
             System.out.println("Input letter: ");
             input = scanner.next();
             System.out.println("Input pos: ");

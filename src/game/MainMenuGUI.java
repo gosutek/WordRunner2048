@@ -21,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.Effect;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.transform.Rotate;
@@ -31,8 +32,8 @@ import javafx.util.Duration;
 
 public class MainMenuGUI extends Pane{
 
-    private final float windowWidth = 1024;
-    private final float windowHeigth = 768;
+    private final float windowWidth = 1600;
+    private final float windowHeigth = 900;
 
     private final int GRID_WIDTH = 3000;
     private final int GRID_HEIGHT = 3000;
