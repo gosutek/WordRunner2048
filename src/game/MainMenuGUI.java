@@ -17,6 +17,7 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.Effect;
@@ -39,7 +40,9 @@ public class MainMenuGUI extends Pane{
     private final int GRID_HEIGHT = 3000;
     private final int CELL_SIZE = 100;
 
-    private CustomGraphics title, press_start, button_1, button_2, button_3, button_4, back;
+    private CustomGraphics title, press_start;
+    private VBox button_1_box, button_2_box;
+    private Button button_1, button_2, button_3, button_4, back;
     private SubScene gridScene;
     private Group graphics, buttons;
     private Dictionary activeDictionary;
@@ -66,7 +69,7 @@ public class MainMenuGUI extends Pane{
         createGraphics();
 
         this.graphics = new Group();
-        graphics.getChildren().addAll(title, press_start, button_1, button_2, button_3, button_4, back);
+        graphics.getChildren().addAll(title, press_start);
         this.getChildren().add(graphics);
 
     }
@@ -83,32 +86,16 @@ public class MainMenuGUI extends Pane{
     private void createGraphics() {
 
         this.title = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/title_icon.png"), 800.0, 801.0, 1.0);
-        this.press_start = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/press_start_cropped.png"), 1024.0, 1024.0, 1.0);
-        this.button_1 = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 500, 500, 0.8);
-        this.button_2 = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 500, 500, 0.8);
-        this.button_3 = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 500, 500, 0.8);
-        this.button_4 = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 500, 500, 0.8);
-        this.back = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 500, 500, 0.8);
+        this.press_start = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/press_start_cropped.png"), 1024.0, 1600.0, 1.0);
 
-        title.setTranslateX(120.0);
-        button_1.setTranslateX(260.0);
-        button_1.setTranslateY(2000);
-        button_2.setTranslateX(260.0);
-        button_2.setTranslateY(2000);
-        button_3.setTranslateX(260.0);
-        button_3.setTranslateY(2000);
-        button_4.setTranslateX(260.0);
-        button_4.setTranslateY(2000);
-        back.setTranslateX(260.0);
-        back.setTranslateY(2000);
-        press_start.setTranslateY(600.0);
+        title.setTranslateX(windowWidth / 4);
+        press_start.setTranslateY(windowHeigth - windowHeigth / 5);
+        press_start.setTranslateX(windowWidth / 2 - windowWidth / 3);
     }
 
     public void titleFadeOutAnimation() {
 
         Timeline titleFadeOut = new Timeline(
-            new KeyFrame(Duration.ZERO, new KeyValue(title.translateYProperty(), title.getTranslateX())),
-            new KeyFrame(new Duration(500), new KeyValue(title.translateYProperty(), - 2000)),
             new KeyFrame(Duration.ZERO, new KeyValue(press_start.translateXProperty(), press_start.getTranslateX())),
             new KeyFrame(new Duration(500), new KeyValue(press_start.translateXProperty(), -3500))
         );
@@ -119,6 +106,7 @@ public class MainMenuGUI extends Pane{
             @Override
             public void handle(ActionEvent arg0) {
                 titleFadeOut.stop(); // unecessary?
+                createMainMenuButtons();
                 mainMenuFadeInAnimation();
             }
             
@@ -130,54 +118,36 @@ public class MainMenuGUI extends Pane{
 
         Timeline newGameAnimation = new Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(button_1.translateYProperty(), button_1.getTranslateY())),
-            new KeyFrame(new Duration(125), new KeyValue(button_1.translateYProperty(), 200)),
+            new KeyFrame(new Duration(125), new KeyValue(button_1.translateYProperty(), 400)) ,
             new KeyFrame(new Duration(125), new KeyValue(button_2.translateYProperty(), button_2.getTranslateY())),
-            new KeyFrame(new Duration(250), new KeyValue(button_2.translateYProperty(), 350)),
-            new KeyFrame(new Duration(250), new KeyValue(button_3.translateYProperty(), button_3.getTranslateY())),
-            new KeyFrame(new Duration(375), new KeyValue(button_3.translateYProperty(), 500))
+            new KeyFrame(new Duration(250), new KeyValue(button_2.translateYProperty(), 550))
         );
 
         newGameAnimation.play();
-        newGameAnimation.setOnFinished(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent arg0) {
-                createMainMenuButtons();
-            }
-        });
     }
 
     private void createMainMenuButtons() {
         this.gridScene.setEffect(null);
         this.buttons = new Group();
 
-        VBox new_game_box = new VBox();
-        Button new_game_btn = new Button("New Game");
-        new_game_btn.setId("new_game_btn");
+        this.button_1 = new Button("New Game");
+        button_1.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 300, 300, 0.8));
+        button_1.setContentDisplay(ContentDisplay.CENTER);
+        button_1.setTranslateX(windowWidth / 2 - windowWidth / 10);
+        button_1.setTranslateY(2000);
+        button_1.setId("new_game_btn");
 
-        VBox offline_mode_box = new VBox();
-        Button offline_mode_btn = new Button("Offline");
-        offline_mode_btn.setId("offline_mode_btn");
+        this.button_2 = new Button("Quit");
+        button_2.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 300, 300, 0.8));
+        button_2.setContentDisplay(ContentDisplay.CENTER);
+        button_2.setTranslateX(windowWidth / 2 - windowWidth / 9.8);
+        button_2.setTranslateY(2000);
+        button_2.setId("quit_btn");
 
-        VBox quit_box = new VBox();
-        Button quit_btn = new Button("Quit");
-        quit_btn.setId("quit_btn");
-
-        new_game_box.getChildren().add(new_game_btn);
-        new_game_box.setTranslateX(button_1.getTranslateX() + 105);
-        new_game_box.setTranslateY(button_1.getTranslateY() + 95);
-
-        offline_mode_box.getChildren().add(offline_mode_btn);
-        offline_mode_box.setTranslateX(button_2.getTranslateX() + 125);
-        offline_mode_box.setTranslateY(button_2.getTranslateY() + 100);
-
-        quit_box.getChildren().add(quit_btn);
-        quit_box.setTranslateX(button_3.getTranslateX() + 145);
-        quit_box.setTranslateY(button_3.getTranslateY() + 85);
-        buttons.getChildren().addAll(new_game_box, offline_mode_box, quit_box);
+        buttons.getChildren().addAll(button_1, button_2);
         this.getChildren().add(buttons);
 
-        quit_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        button_2.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent arg0) {
@@ -186,25 +156,25 @@ public class MainMenuGUI extends Pane{
             
         });
 
-        new_game_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        button_1.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent arg0) {
-                buttons.getChildren().removeAll(new_game_box, offline_mode_box, quit_box);
+                buttons.getChildren().removeAll(button_1_box, button_2_box);
                 themeFadeInAnimation();
             }
             
         });
 
-        offline_mode_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        /* offline_mode_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent arg0) {
                 thisObj.gridScene.setEffect(new BoxBlur());
-                startOfflineMode(thisObj, new_game_box, offline_mode_box, quit_box);
+                startOfflineMode(thisObj, mainMenuBox, offline_mode_box, quit_box);
             }
             
-        });
+        }); */
 
     }
 
