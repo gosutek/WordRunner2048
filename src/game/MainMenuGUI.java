@@ -46,12 +46,10 @@ public class MainMenuGUI extends Pane{
     private SubScene gridScene;
     private Group graphics, buttons;
     private Dictionary activeDictionary;
-    private boolean selectedDictionary;
     private final MainMenuGUI thisObj = this;
 
     MainMenuGUI() {
 
-        this.selectedDictionary = false;
         this.prefWidth(windowWidth);
         this.prefHeight(windowHeigth);
 
@@ -256,8 +254,7 @@ public class MainMenuGUI extends Pane{
                 graphics.getChildren().removeAll(title);
                 buttons.getChildren().removeAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back);
                 
-                loadingSubject(new SubjectRequester(), new WorksRequester(), "science-fiction", feedback);
-                setSelectedDictionary();
+                loadingSubject(thisObj, new SubjectRequester(), new WorksRequester(), "science-fiction", feedback);
                 
             }
             
@@ -270,8 +267,7 @@ public class MainMenuGUI extends Pane{
                 graphics.getChildren().removeAll(title);
                 buttons.getChildren().removeAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back);
                 
-                loadingSubject(new SubjectRequester(), new WorksRequester(), "mystery", feedback);
-                setSelectedDictionary();
+                loadingSubject(thisObj, new SubjectRequester(), new WorksRequester(), "mystery", feedback);
                 
             }
             
@@ -284,8 +280,7 @@ public class MainMenuGUI extends Pane{
                 graphics.getChildren().removeAll(title);
                 buttons.getChildren().removeAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back);
                 
-                loadingSubject(new SubjectRequester(), new WorksRequester(), "horror", feedback);
-                setSelectedDictionary();
+                loadingSubject(thisObj, new SubjectRequester(), new WorksRequester(), "horror", feedback);
                 
             }
             
@@ -298,8 +293,7 @@ public class MainMenuGUI extends Pane{
                 graphics.getChildren().removeAll(title);
                 buttons.getChildren().removeAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back);
                 
-                loadingSubject(new SubjectRequester(), new WorksRequester(), "fantasy", feedback);
-                setSelectedDictionary();
+                loadingSubject(thisObj, new SubjectRequester(), new WorksRequester(), "fantasy", feedback);
                 
             }
             
@@ -355,7 +349,7 @@ public class MainMenuGUI extends Pane{
         downloadDictionaryTimeline.play();
     }
 
-    private void loadingSubject(SubjectRequester subjectRequester, WorksRequester worksRequester, String subject, Label feedback) {
+    private void loadingSubject(MainMenuGUI thisObj, SubjectRequester subjectRequester, WorksRequester worksRequester, String subject, Label feedback) {
         Task<SessionGUI> subjectTask = new Task<SessionGUI>() {
 
             @Override
@@ -410,6 +404,7 @@ public class MainMenuGUI extends Pane{
                         @Override
                         public void handle(ActionEvent arg0) {
                             buttons.getChildren().removeAll(feedback);
+                            thisObj.getChildren().add(subjectTask.getValue());
                         }
                     });
                 }
@@ -429,6 +424,8 @@ public class MainMenuGUI extends Pane{
                     @Override
                     public void handle(ActionEvent arg0) {
                         buttons.getChildren().removeAll(feedback);
+                        createThemeButtons();
+                        downloadDictionaryAnimation();
                     }
                 });
                 newGameMenuAnimation();
@@ -485,21 +482,4 @@ public class MainMenuGUI extends Pane{
         });
 
     }
-
-    private void setActiveDictionary(Dictionary dictionary) {
-        this.activeDictionary = dictionary;
-    }
-
-    public Dictionary getActiveDictionary() {
-        return activeDictionary;
-    }
-
-    private void setSelectedDictionary() {
-        selectedDictionary = true;
-    }
-
-    public boolean selectedDictionary() {
-        return selectedDictionary;
-    }
-
 }
