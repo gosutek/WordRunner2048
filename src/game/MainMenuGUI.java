@@ -57,7 +57,7 @@ public class MainMenuGUI extends Pane{
         this.prefHeight(windowHeigth);
 
         AnimatedGrid grid = new AnimatedGrid(GRID_WIDTH, GRID_HEIGHT, CELL_SIZE);
-        grid.setTranslateX(-900);
+        grid.setTranslateX(-600);
         grid.setTranslateZ(900);
         this.gridScene = new SubScene(grid, GRID_WIDTH, GRID_HEIGHT, true, SceneAntialiasing.BALANCED);
         this.getChildren().add(gridScene);
@@ -90,6 +90,7 @@ public class MainMenuGUI extends Pane{
         this.press_start = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/press_start_cropped.png"), 1024.0, 1600.0, 1.0);
 
         title.setTranslateX(windowWidth / 4);
+        title.setTranslateY(-30);
         press_start.setTranslateY(windowHeigth - windowHeigth / 5);
         press_start.setTranslateX(windowWidth / 2 - windowWidth / 3);
     }
@@ -181,6 +182,14 @@ public class MainMenuGUI extends Pane{
                 graphics.getChildren().remove(title);
                 buttons.getChildren().removeAll(button_1, button_2, button_3, back);
                 startRandomSession(thisObj);
+            }
+            
+        });
+
+        button_2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent arg0) {
+                
             }
             
         });
