@@ -20,6 +20,7 @@ public class WorksRequester extends Requester {
             System.out.println("Requesting work...");
             //reqURL = "https://openlibrary.org" + reqURL + ".json";
             URL url = new URL(reqURL);
+            System.out.println(reqURL);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -42,11 +43,13 @@ public class WorksRequester extends Requester {
 
             results[0] = jsonObject.getString("title");
             if (jsonObject.has("description")) {
-                results[1] = jsonObject.getString("description");
-            } else {
-                JSONObject res = jsonObject.getJSONObject("description");
-                results[1] = res.getString("value");
-            }
+                if (jsonObject.get("description") instanceof JSONObject) {
+                    JSONObject res = jsonObject.getJSONObject("description");
+                    results[1] = res.getString("value");
+                } else {
+                    results[1] = jsonObject.getString("description");
+                }
+            } 
 
         } catch (IOException | ErrorHandler.ConnectionException exc) {
             exc.printStackTrace();

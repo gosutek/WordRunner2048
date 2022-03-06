@@ -13,7 +13,7 @@ import org.json.*;
 public class SubjectRequester extends Requester {
 
     private String[] resultURL = new String[2];
-    private final int workLimit = 10;
+    private final int workLimit = 50;
 
     @Override
     public String[] readFromURL(String subject) {

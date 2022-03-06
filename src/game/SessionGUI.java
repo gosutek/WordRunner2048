@@ -128,6 +128,9 @@ public class SessionGUI extends GridPane {
         play(session);
 
     }
+    protected Session getSession() {
+        return session;
+    }
     private void setUserLetterSelection(int input) {
         userLetterSelection = input;
         updateCandidateWordLabel(session, userLetterSelection);

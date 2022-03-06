@@ -31,6 +31,9 @@ public class Session {
             }
         }
     }
+    protected Dictionary getDictionary() {
+        return activeDictionary;
+    }
 
     protected Word getHiddenWord() {
         return hiddenWord;

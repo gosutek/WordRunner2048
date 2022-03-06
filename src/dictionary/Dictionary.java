@@ -19,6 +19,7 @@ public class Dictionary {
     private int numberOfWords;
     private String pathToDictionary, dictionaryBook, dictionaryID;
     private Word[] dictionaryContents;
+    private String errorMessage = null;
 
     public Dictionary(){};
 
@@ -41,12 +42,17 @@ public class Dictionary {
             String[] results = worksRequester.readFromURL(url);
             dictionaryBook = results[0];
             dictionaryContents = parseDictionary(results[1]); // this sets words and letters
-    
-            createDictionary(dictionaryFile);
+            if (dictionaryContents != null) {
+                createDictionary(dictionaryFile);
+            }
         } else {
             dictionaryContents = readExistingDictionary(dictionaryFile);
         }
 
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
     public int getWords() {
@@ -137,6 +143,8 @@ public class Dictionary {
         } catch (ArithmeticException | ErrorHandler.UnbalancedException
                 | ErrorHandler.UndersizeException exc) {
             exc.printStackTrace();
+            errorMessage = exc.getStackTrace().toString();
+            return null;
         }
         return resultsWords.toArray(new Word[resultsWords.size()]);
     }
