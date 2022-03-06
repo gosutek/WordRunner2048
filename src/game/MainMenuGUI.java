@@ -17,18 +17,14 @@ import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.BoxBlur;
-import javafx.scene.effect.Effect;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.event.EventHandler;
@@ -48,7 +44,6 @@ public class MainMenuGUI extends Pane{
     private CustomButton button_1, button_2, button_3, button_4, button_5, back;
     private SubScene gridScene;
     private Group graphics, buttons;
-    private Dictionary activeDictionary;
     private final MainMenuGUI thisObj = this;
 
     MainMenuGUI() {
@@ -133,10 +128,8 @@ public class MainMenuGUI extends Pane{
         this.buttons = new Group();
 
         this.button_1 = new CustomButton("New Game", windowWidth / 2 - windowWidth / 10, 2000);
-        //button_1.setId("new_game_btn");
 
         this.button_2 = new CustomButton("Quit", windowWidth / 2 - windowWidth / 9.8, 2000);
-        //button_2.setId("quit_btn");
 
         buttons.getChildren().addAll(button_1, button_2);
         this.getChildren().add(buttons);
@@ -147,7 +140,6 @@ public class MainMenuGUI extends Pane{
             public void handle(MouseEvent arg0) {
                 System.exit(0);
             }
-            
         });
 
         button_1.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -158,7 +150,6 @@ public class MainMenuGUI extends Pane{
                 createNewGameButtons();
                 newGameMenuAnimation();
             }
-            
         });
 
     }
@@ -172,6 +163,8 @@ public class MainMenuGUI extends Pane{
         this.button_3 = new CustomButton("Download", windowWidth / 2 - windowWidth / 10, 2000);
 
         this.back = new CustomButton("Back", windowWidth / 2 - windowWidth / 10, 2000);
+
+        LoadListView list = new LoadListView(windowWidth, windowHeigth);
 
         buttons.getChildren().addAll(button_1, button_2, button_3, back);
 
@@ -189,7 +182,10 @@ public class MainMenuGUI extends Pane{
         button_2.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent arg0) {
-                
+                thisObj.gridScene.setEffect(new BoxBlur());
+                graphics.getChildren().remove(title);
+                buttons.getChildren().removeAll(button_1, button_2, button_3);
+                thisObj.getChildren().add(list);
             }
             
         });
@@ -207,6 +203,10 @@ public class MainMenuGUI extends Pane{
         back.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent arg0) {
+                if (!graphics.getChildren().contains(title)) {
+                    graphics.getChildren().add(title);
+                }
+                thisObj.getChildren().remove(list);
                 buttons.getChildren().removeAll(button_1, button_2, button_3, back);
                 createMainMenuButtons();
                 mainMenuFadeInAnimation();
@@ -568,4 +568,45 @@ public class MainMenuGUI extends Pane{
         });
 
     }
+
+    /* private void startLoadingSequence(MainMenuGUI thisObj) {
+
+        Task<SessionGUI> LoadTask = new Task<SessionGUI>() {
+
+            @Override
+            protected SessionGUI call() throws Exception {
+                SessionGUI sessionGUI;
+                Dictionary dictionary;
+                try {
+                    dictionary = new Dictionary(workKey);
+                    sessionGUI = new SessionGUI(dictionary);
+                    sessionGUI.setViewOrder(-1);
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                    sessionGUI = null;
+                }
+                return sessionGUI;
+            }
+        };
+
+        Thread loadThread = new Thread(LoadTask);
+        loadThread.setDaemon(true);
+        loadThread.start();
+
+        LoadTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+            @Override
+            public void handle(WorkerStateEvent t) {
+                graphics.getChildren().remove(title);
+                buttons.getChildren().removeAll(back);
+                thisObj.getChildren().add(LoadTask.getValue());
+            }
+        });
+        LoadTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent evt) {
+            }
+        });
+
+    } */
 }
