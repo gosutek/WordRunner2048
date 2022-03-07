@@ -7,11 +7,13 @@ import dictionary.Dictionary;
 import dictionary.Word;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
@@ -37,6 +39,10 @@ public class SessionGUI extends GridPane {
     private Label wordCountLabel, scoreLabel, percentageLabel, inputLabel, solutionLabel;
     private double percentage;
     private int wordCount, score, userLetterSelection;
+    private final TextField userInput;
+    private Dictionary activeDictionary;
+    private Button button_1, button_2, button_3, returnButton;
+
     private final CustomGraphics[] crossWordGraphics = {
         new CustomGraphics(this.getClass().getResourceAsStream("../graphics/hang0.png"), 500, 500, 1.0),
         new CustomGraphics(this.getClass().getResourceAsStream("../graphics/hang1.png"), 500, 500, 1.0),
@@ -48,7 +54,6 @@ public class SessionGUI extends GridPane {
 
     };
 
-    private Dictionary activeDictionary;
 
     SessionGUI(Dictionary dictionary) {
 
@@ -62,8 +67,6 @@ public class SessionGUI extends GridPane {
 
         this.setMinSize(windowWidth, windowHeigth);
         this.setMaxSize(windowWidth, windowHeigth);
-        this.setWidth(windowWidth);
-        this.setHeight(windowHeigth);
         this.setAlignment(Pos.CENTER);
         //this.setGridLinesVisible(true);
 
@@ -84,24 +87,23 @@ public class SessionGUI extends GridPane {
         guessWordBox.setAlignment(Pos.CENTER);
 
 
-        TextField userInput = new TextField();
+        userInput = new TextField();
         userInput.setPromptText("Press Enter...");
         setTextFieldHandler(userInput);
         userInput.setId("user_input");
 
 
-        //inputBox.getChildren().addAll(inputLabel, userInput);
 
 
-        this.setPadding(new Insets(20, 20, 20, 20));
+        //this.setPadding(new Insets(20, 20, 20, 20));
         this.add(wordCountLabel, 0, 0);
         this.add(scoreLabel, 1, 0);
         GridPane.setHalignment(scoreLabel, HPos.CENTER);
         this.add(percentageLabel, 2, 0);
         this.add(leftPane, 0, 1);
         leftPane.setAlignment(Pos.CENTER);
-        this.add(crossWordGraphics[6], 1, 1);
-        GridPane.setHalignment(crossWordGraphics[6], HPos.CENTER);
+        this.add(crossWordGraphics[0], 1, 1);
+        GridPane.setHalignment(crossWordGraphics[0], HPos.CENTER);
         this.add(candidateWordBox, 2, 1);
         candidateWordBox.setAlignment(Pos.CENTER);
         this.add(inputLabel, 0, 2);
@@ -109,14 +111,6 @@ public class SessionGUI extends GridPane {
         this.add(userInput, 1, 2);
         userInput.setAlignment(Pos.CENTER);
         createBottomButtons();
-        /* this.add(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 250, 250, 0.8), 0, 3);
-        this.add(new HBox (
-            new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 250, 250, 0.8),
-            new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 250, 250, 0.8)),
-            1,
-            3
-        );
-        this.add(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 250, 250, 0.8), 2, 3); */
 
         play(session);
 
@@ -134,20 +128,23 @@ public class SessionGUI extends GridPane {
     }
 
     private void createBottomButtons() {
-        Button button_1, button_2, button_3, button_4;
         button_1 = new Button("Dictionary");
+        button_1.setId("session-gui-dictionary");
         button_2 = new Button("Rounds");
+        button_2.setId("session-gui-rounds");
         button_3 = new Button("Solution");
-        button_4 = new Button("Back");
+        button_3.setId("session-gui-solution");
+        returnButton = new Button("Back");
+        returnButton.setId("session-gui-back");
 
-        button_1.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 150, 150, 0.5));
+        button_1.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 200, 200, 0.5));
         button_1.setContentDisplay(ContentDisplay.CENTER);
-        button_2.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 150, 150, 0.5));
+        button_2.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 200, 200, 0.5));
         button_2.setContentDisplay(ContentDisplay.CENTER);
-        button_3.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 150, 150, 0.5));
+        button_3.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 200, 200, 0.5));
         button_3.setContentDisplay(ContentDisplay.CENTER);
-        button_4.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 150, 150, 0.5));
-        button_4.setContentDisplay(ContentDisplay.CENTER);
+        returnButton.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 200, 200, 0.5));
+        returnButton.setContentDisplay(ContentDisplay.CENTER);
 
 
         this.add(button_1, 0, 3);
@@ -159,10 +156,45 @@ public class SessionGUI extends GridPane {
         this.add(middleBox, 1, 3);
         GridPane.setHalignment(middleBox, HPos.CENTER);
         GridPane.setValignment(middleBox, VPos.CENTER);
-        this.add(button_4, 2, 3);
-        GridPane.setHalignment(button_4, HPos.CENTER);
-        GridPane.setValignment(button_4, VPos.CENTER);
+        this.add(returnButton, 2, 3);
+        GridPane.setHalignment(returnButton, HPos.CENTER);
+        GridPane.setValignment(returnButton, VPos.CENTER);
+
+        setBottomButtonHandlers();
         
+    }
+
+    public Button getReturnButton() {
+        return returnButton;
+    }
+
+    private void setBottomButtonHandlers() {
+
+        button_3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            
+            @Override
+            public void handle(MouseEvent arg0) {
+                solutionLabel.setOpacity(1);
+                userInput.setDisable(true);
+                button_1.setDisable(true);
+                button_2.setDisable(true);
+                changeHangmanGraphics(crossWordGraphics[6]);
+            }
+        });
+
+    }
+
+    private void changeHangmanGraphics(CustomGraphics newVal) {
+        ObservableList<Node> cells = this.getChildren();
+        for (Node elem : cells) {
+            int row = GridPane.getRowIndex(elem);
+            int column = GridPane.getColumnIndex(elem);
+            if (elem instanceof CustomGraphics && row == 1 && column == 1) {
+                cells.remove(elem);
+                this.add(newVal, 1, 1);
+                GridPane.setHalignment(newVal, HPos.CENTER);
+            }
+        }
     }
 
     private void updateCandidateWordLabel(Session session, int pos) {

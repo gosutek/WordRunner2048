@@ -532,6 +532,15 @@ public class MainMenuGUI extends Pane{
             @Override
             public void handle(WorkerStateEvent t) {
                 thisObj.getChildren().add(offlineTask.getValue());
+                offlineTask.getValue().getReturnButton().setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent arg0) {
+                        graphics.getChildren().add(title);
+                        thisObj.getChildren().remove(offlineTask.getValue());
+                        createMainMenuButtons();
+                        mainMenuFadeInAnimation();
+                    }
+                });
             }
         });
         offlineTask.setOnFailed(new EventHandler<WorkerStateEvent>() {

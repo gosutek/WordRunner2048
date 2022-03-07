@@ -64,6 +64,21 @@
     -fx-font-size: 40px;
 }
 
+#session-gui-dictionary {
+    -fx-font-size: 20px;
+}
+
+#session-gui-rounds {
+    -fx-font-size: 20px;
+}
+
+#session-gui-solution {
+    -fx-font-size: 20px;
+}
+
+#session-gui-back {
+    -fx-font-size: 20px;
+}
 
 .label {
     -fx-font-size: 20px;
