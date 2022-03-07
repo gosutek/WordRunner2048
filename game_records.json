@@ -1,0 +1,16 @@
+{
+	"records": [
+		{
+			"number-of-tries": "0",
+			"datetime": "2022-03-07 17:12:22.682185782",
+			"hidden-word": "THE_LORD_OF_THE_RINGS",
+			"outcome": "Lost"
+		},
+		{
+			"number-of-tries": "0",
+			"datetime": "2022-03-07 17:18:07.108145745",
+			"hidden-word": "FELLOWSHIP",
+			"outcome": "Lost"
+		}
+	]
+}

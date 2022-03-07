@@ -535,8 +535,10 @@ public class MainMenuGUI extends Pane{
                 offlineTask.getValue().getReturnButton().setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent arg0) {
+                        Session currentSession = offlineTask.getValue().getSession();
                         graphics.getChildren().add(title);
                         thisObj.getChildren().remove(offlineTask.getValue());
+                        RecordGame record = new RecordGame(currentSession.getHiddenWord().toString(), "Lost", 0);
                         createMainMenuButtons();
                         mainMenuFadeInAnimation();
                     }
