@@ -30,6 +30,7 @@ public class Game extends Application {
 
         stage.getIcons().add(new Image(getClass().getResourceAsStream("../graphics/icon.png")));
         stage.setScene(startScene);
+        stage.setResizable(false);
         startScene.getStylesheets().add(Game.class.getResource("Game.css").toExternalForm());
         stage.show();
     }

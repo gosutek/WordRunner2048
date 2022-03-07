@@ -42,6 +42,7 @@ public class SessionGUI extends GridPane {
     private final TextField userInput;
     private Dictionary activeDictionary;
     private Button button_1, button_2, button_3, returnButton;
+    private final GridPane detailsPane;
 
     private final CustomGraphics[] crossWordGraphics = {
         new CustomGraphics(this.getClass().getResourceAsStream("../graphics/hang0.png"), 500, 500, 1.0),
@@ -73,6 +74,16 @@ public class SessionGUI extends GridPane {
 
         activeDictionary = dictionary;
         wordCount = activeDictionary.getWords();
+
+
+        final float[] dictionaryStats = activeDictionary.getDictionaryStatistics();
+        detailsPane = new GridPane(); 
+
+        detailsPane.add(new Label("Dictionary Details"), 0, 0);
+        detailsPane.add(new Label(""), 0, 2);
+        detailsPane.add(new Label("6 letters: " + String.format("%.2f", dictionaryStats[0]) + "%"), 0, 3);
+        detailsPane.add(new Label("7 to 9 letters: " + String.format("%.2f", dictionaryStats[1])  + "%"), 0, 4);
+        detailsPane.add(new Label("10 or more letters: " + String.format("%.2f", dictionaryStats[2]) + "%"), 0, 5);
 
         session = new Session(activeDictionary);
 
@@ -176,6 +187,15 @@ public class SessionGUI extends GridPane {
 
     private void setBottomButtonHandlers() {
 
+        button_1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            
+            @Override
+            public void handle(MouseEvent arg0) {
+                replaceLeftPane();
+            }
+
+        });
+
         button_3.setOnMouseClicked(new EventHandler<MouseEvent>() {
             
             @Override
@@ -192,13 +212,44 @@ public class SessionGUI extends GridPane {
 
     }
 
+    private void replaceLeftPane() {
+        ObservableList<Node> cells = this.getChildren();
+        Node targetVBox, targetGridPane;
+        targetVBox = targetGridPane = null;
+        for(Node elem: cells) {
+            int row = GridPane.getRowIndex(elem);
+            int column = GridPane.getColumnIndex(elem);
+            if (elem instanceof VBox && row == 1 && column == 0) {
+                targetVBox = elem;
+            } else if (elem instanceof GridPane && row == 1 && column == 0) {
+                targetGridPane = elem;
+            }
+        }
+        if (targetGridPane == null) {
+            this.getChildren().remove(targetVBox);
+            this.add(detailsPane, 0, 1);
+            detailsPane.setAlignment(Pos.CENTER_LEFT);
+            button_2.setDisable(true);
+            button_3.setDisable(true);
+            userInput.setDisable(true);
+            returnButton.setDisable(true);
+        } else {
+            this.getChildren().remove(targetGridPane);
+            this.add(leftPane, 0, 1);
+            button_2.setDisable(false);
+            button_3.setDisable(false);
+            userInput.setDisable(false);
+            returnButton.setDisable(false);
+        }
+    }
+
     private void changeHangmanGraphics(CustomGraphics newVal) {
         ObservableList<Node> cells = this.getChildren();
         for (Node elem : cells) {
             int row = GridPane.getRowIndex(elem);
             int column = GridPane.getColumnIndex(elem);
             if (elem instanceof CustomGraphics && row == 1 && column == 1) {
-                cells.remove(elem);
+                this.getChildren().remove(elem);
                 this.add(newVal, 1, 1);
                 GridPane.setHalignment(newVal, HPos.CENTER);
             }

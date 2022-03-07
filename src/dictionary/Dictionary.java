@@ -19,7 +19,7 @@ public class Dictionary {
     private int numberOfWords;
     private String pathToDictionary, dictionaryBook, dictionaryID;
     private Word[] dictionaryContents;
-    private double[] dictionaryStatistics = new double[3];
+    private float[] dictionaryStatistics = new float[3];
     private String errorMessage = null;
 
     public Dictionary(){};
@@ -48,12 +48,11 @@ public class Dictionary {
             }
         } else {
             dictionaryContents = readExistingDictionary(dictionaryFile);
-            numberOfWords = dictionaryContents.length;
         }
 
     }
 
-    public double[] getDictionaryStatistics() {
+    public float[] getDictionaryStatistics() {
         return dictionaryStatistics;
     }
 
@@ -146,9 +145,9 @@ public class Dictionary {
             }
         }
         numberOfWords = resultsWords.size();
-        dictionaryStatistics[0] = sixLetterWords / numberOfWords;
-        dictionaryStatistics[1] = sevenToNineLetterWords / numberOfWords;
-        dictionaryStatistics[2] = tenOrMoreLetterWords / numberOfWords;
+        dictionaryStatistics[0] = (float) sixLetterWords / numberOfWords;
+        dictionaryStatistics[1] = (float) sevenToNineLetterWords / numberOfWords;
+        dictionaryStatistics[2] = (float) tenOrMoreLetterWords / numberOfWords;
         try {
             if (numberOfWords == 0) {
                 throw new ArithmeticException("Zero total length");
@@ -169,16 +168,30 @@ public class Dictionary {
 
     private Word[] readExistingDictionary(File dictionaryFile) {
         List<Word> wordList = new ArrayList<Word>();
+        int sixLetterWords, sevenToNineLetterWords, tenOrMoreLetterWords;
+        sixLetterWords = sevenToNineLetterWords = tenOrMoreLetterWords = 0;
         try {
             Scanner reader = new Scanner(dictionaryFile);
             while(reader.hasNextLine()) {
                 Word word = new Word(reader.nextLine());
+                if (word.length() == 6) {
+                    sixLetterWords++;
+                } else if (word.length() >= 7 && word.length() <= 9) {
+                    sevenToNineLetterWords++;
+                } else if (word.length() >= 10) {
+                    tenOrMoreLetterWords++;
+                }
                 wordList.add(word);
             }
             reader.close();
+            numberOfWords = wordList.size();
+            dictionaryStatistics[0] = ((float) sixLetterWords / numberOfWords) * 100;
+            dictionaryStatistics[1] = ((float) sevenToNineLetterWords / numberOfWords) * 100;
+            dictionaryStatistics[2] = ((float) tenOrMoreLetterWords / numberOfWords) * 100;
         } catch (FileNotFoundException exc) {
             exc.printStackTrace();
         }
         return wordList.toArray(new Word[wordList.size()]);
     }
+
 }
