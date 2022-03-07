@@ -24,7 +24,7 @@ public class Dictionary {
     public Dictionary(){};
 
     public Dictionary(File dictionary) {
-        dictionaryID = dictionary.getName().replace("handman_", "").replace(".txt", "");
+        dictionaryID = dictionary.getName().replace("hangman_", "").replace(".txt", "");
         pathToDictionary = "./medialab/hangman_" + dictionaryID + ".txt";
         dictionaryBook = "null";
         dictionaryContents = readExistingDictionary(dictionary);

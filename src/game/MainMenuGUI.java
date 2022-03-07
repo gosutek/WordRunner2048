@@ -165,7 +165,7 @@ public class MainMenuGUI extends Pane{
 
         this.back = new CustomButton("Back", windowWidth / 2 - windowWidth / 10, 2000);
 
-        LoadListView list = new LoadListView(windowWidth, windowHeigth);
+        LoadListView list = new LoadListView(windowWidth, windowHeigth, button_3);
 
         buttons.getChildren().addAll(button_1, button_2, button_3, back);
 
@@ -185,9 +185,21 @@ public class MainMenuGUI extends Pane{
             public void handle(MouseEvent arg0) {
                 thisObj.gridScene.setEffect(new BoxBlur());
                 graphics.getChildren().remove(title);
-                buttons.getChildren().removeAll(button_1, button_2, button_3);
+                buttons.getChildren().removeAll(button_1, button_2);
+                list.disableButton();
                 thisObj.getChildren().add(list);
                 list.setAlignment(Pos.CENTER);
+                EventHandler<MouseEvent> loadEvent = new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent arg0) {
+                        button_3.removeEventHandler(MouseEvent.MOUSE_CLICKED, this);
+                        String selection = list.getListView().getSelectionModel().getSelectedItem();
+                        buttons.getChildren().removeAll(button_3, back);
+                        thisObj.getChildren().remove(list);
+                        startLoadingSequence(thisObj, selection);
+                    }
+                };
+                button_3.addEventHandler(MouseEvent.MOUSE_CLICKED, loadEvent);
             }
             
         });
@@ -195,10 +207,11 @@ public class MainMenuGUI extends Pane{
         button_3.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent arg0) {
-                buttons.getChildren().removeAll(button_1, button_2, button_3, back);
-                createThemeButtons();
-                downloadDictionaryAnimation();
-                
+                if (button_3.getText() == "Download") {
+                    buttons.getChildren().removeAll(button_1, button_2, button_3, back);
+                    createThemeButtons();
+                    downloadDictionaryAnimation();
+                }
             }
         });
 
@@ -571,7 +584,7 @@ public class MainMenuGUI extends Pane{
 
     }
 
-    /* private void startLoadingSequence(MainMenuGUI thisObj) {
+    private void startLoadingSequence(MainMenuGUI thisObj, String dictionaryID) {
 
         Task<SessionGUI> LoadTask = new Task<SessionGUI>() {
 
@@ -579,8 +592,9 @@ public class MainMenuGUI extends Pane{
             protected SessionGUI call() throws Exception {
                 SessionGUI sessionGUI;
                 Dictionary dictionary;
+                File dictionaryPath = new File("./medialab/hangman_" + dictionaryID + ".txt");
                 try {
-                    dictionary = new Dictionary(workKey);
+                    dictionary = new Dictionary(dictionaryPath);
                     sessionGUI = new SessionGUI(dictionary);
                     sessionGUI.setViewOrder(-1);
                 } catch (Exception exc) {
@@ -610,5 +624,5 @@ public class MainMenuGUI extends Pane{
             }
         });
 
-    } */
+    }
 }
