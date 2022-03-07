@@ -36,7 +36,7 @@ public class SessionGUI extends GridPane {
     private String input;
     private HBox guessWordBox, inputBox, candidateWordBox;
     private VBox leftPane;
-    private Label wordCountLabel, scoreLabel, percentageLabel, inputLabel, solutionLabel;
+    private Label wordCountLabel, scoreLabel, percentageLabel, inputLabel, solutionLabel, gameOverLabel;
     private double percentage;
     private int wordCount, score, userLetterSelection;
     private final TextField userInput;
@@ -82,6 +82,9 @@ public class SessionGUI extends GridPane {
         inputLabel = new Label("Input(ENTER):");
         solutionLabel = new Label(session.getHiddenWord().toString());
         solutionLabel.setOpacity(0);
+        gameOverLabel = new Label("Game Over");
+        gameOverLabel.setOpacity(0);
+        gameOverLabel.setId("game-over-label");
 
         leftPane.getChildren().addAll(solutionLabel, guessWordBox);
         guessWordBox.setAlignment(Pos.CENTER);
@@ -110,6 +113,9 @@ public class SessionGUI extends GridPane {
         inputLabel.setAlignment(Pos.CENTER);
         this.add(userInput, 1, 2);
         userInput.setAlignment(Pos.CENTER);
+        this.add(gameOverLabel, 1, 3);
+        GridPane.setHalignment(gameOverLabel, HPos.CENTER);
+        GridPane.setValignment(gameOverLabel, VPos.CENTER);
         createBottomButtons();
 
         play(session);
@@ -147,16 +153,16 @@ public class SessionGUI extends GridPane {
         returnButton.setContentDisplay(ContentDisplay.CENTER);
 
 
-        this.add(button_1, 0, 3);
+        this.add(button_1, 0, 4);
         this.setVgap(0);
         GridPane.setHalignment(button_1, HPos.CENTER);
         GridPane.setValignment(button_1, VPos.CENTER);
         HBox middleBox = new HBox(100);
         middleBox.getChildren().addAll(button_2, button_3);
-        this.add(middleBox, 1, 3);
+        this.add(middleBox, 1, 4);
         GridPane.setHalignment(middleBox, HPos.CENTER);
         GridPane.setValignment(middleBox, VPos.CENTER);
-        this.add(returnButton, 2, 3);
+        this.add(returnButton, 2, 4);
         GridPane.setHalignment(returnButton, HPos.CENTER);
         GridPane.setValignment(returnButton, VPos.CENTER);
 
@@ -178,6 +184,8 @@ public class SessionGUI extends GridPane {
                 userInput.setDisable(true);
                 button_1.setDisable(true);
                 button_2.setDisable(true);
+                button_3.setDisable(true);
+                gameOverLabel.setOpacity(1);
                 changeHangmanGraphics(crossWordGraphics[6]);
             }
         });

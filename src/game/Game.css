@@ -80,6 +80,11 @@
     -fx-font-size: 20px;
 }
 
+#game-over-label {
+    -fx-font-size: 40px;
+    -fx-effect: dropshadow( gaussian , #ff0909 , 20, 0.7, 0, 0 );
+}
+
 .label {
     -fx-font-size: 20px;
     -fx-text-fill: #ffffff;

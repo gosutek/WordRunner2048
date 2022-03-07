@@ -19,6 +19,7 @@ public class Dictionary {
     private int numberOfWords;
     private String pathToDictionary, dictionaryBook, dictionaryID;
     private Word[] dictionaryContents;
+    private double[] dictionaryStatistics = new double[3];
     private String errorMessage = null;
 
     public Dictionary(){};
@@ -50,6 +51,10 @@ public class Dictionary {
             numberOfWords = dictionaryContents.length;
         }
 
+    }
+
+    public double[] getDictionaryStatistics() {
+        return dictionaryStatistics;
     }
 
     public String getErrorMessage() {
@@ -111,6 +116,8 @@ public class Dictionary {
         ArrayList<Word> resultsWords = new ArrayList<Word>();
         HashSet<String> dupSet = new HashSet<String>(); /* Checks for dups */
         int bigWords = 0;
+        int sixLetterWords, sevenToNineLetterWords, tenOrMoreLetterWords;
+        sixLetterWords = sevenToNineLetterWords = tenOrMoreLetterWords = 0;
 
         for (String word : formattedText) {
             try {
@@ -124,6 +131,13 @@ public class Dictionary {
                 } else if (word.length() >= 9) {
                     bigWords++;
                 }
+                if (word.length() == 6) {
+                    sixLetterWords++;
+                } else if (word.length() >= 7 && word.length() <= 9) {
+                    sevenToNineLetterWords++;
+                } else if (word.length() >= 10) {
+                    tenOrMoreLetterWords++;
+                }
                 resultsWords.add(new Word(word));
 
             } catch (ErrorHandler.InvalidRangeException | ErrorHandler.InvalidCountException exc) {
@@ -132,6 +146,9 @@ public class Dictionary {
             }
         }
         numberOfWords = resultsWords.size();
+        dictionaryStatistics[0] = sixLetterWords / numberOfWords;
+        dictionaryStatistics[1] = sevenToNineLetterWords / numberOfWords;
+        dictionaryStatistics[2] = tenOrMoreLetterWords / numberOfWords;
         try {
             if (numberOfWords == 0) {
                 throw new ArithmeticException("Zero total length");
