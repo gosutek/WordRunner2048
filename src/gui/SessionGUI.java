@@ -480,6 +480,7 @@ public class SessionGUI extends GridPane {
                         button_2.setDisable(true);
                         button_3.setDisable(true);
                         userInput.setDisable(true);
+                        guessWordLabelArray[userLetterSelection].setDisable(true);
                         gameOverLabel.setText("You Win!");
                         gameOverLabel.setOpacity(1);
                     }
@@ -496,8 +497,23 @@ public class SessionGUI extends GridPane {
     private void selectNextSpace() {
         if (userLetterSelection < guessWordLabelArray.length - 1) {
             guessWordBox.getChildren().forEach(elem -> elem.setStyle(null));
-            guessWordLabelArray[userLetterSelection + 1].setStyle("-fx-font-size: 40px;");
-            setUserLetterSelection(userLetterSelection + 1);
+            if (userLetterSelection != -1) {
+                guessWordLabelArray[userLetterSelection].setDisable(true);
+            }
+            int idx = 1;
+            if ((userLetterSelection + idx) >= guessWordLabelArray.length) {
+                return;
+            }
+            while(guessWordLabelArray[userLetterSelection + idx].isDisabled()) {
+                idx++;
+                if ((userLetterSelection + idx) >= guessWordLabelArray.length) {
+                    return;
+                }
+            }
+            guessWordLabelArray[userLetterSelection + idx].setStyle("-fx-font-size: 40px;");
+            setUserLetterSelection(userLetterSelection + idx);
+        } else if (userLetterSelection >= guessWordLabelArray.length - 1) {
+            guessWordLabelArray[userLetterSelection].setDisable(true);
         }
     }
 
