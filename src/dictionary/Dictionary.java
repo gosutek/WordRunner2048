@@ -114,7 +114,8 @@ public class Dictionary {
     }
 
     private Word[] parseDictionary(String text) {
-        String[] formattedText = text.replaceAll("\\W", "\s").replaceAll("\\s", "\n").replaceAll("_", " ").toUpperCase().split("\\s");
+        String[] formattedText = text.replaceAll("\\W", "\s").replaceAll("\\s", "\n")
+        .replaceAll("_", " ").toUpperCase().split("\\s");
         ArrayList<Word> resultsWords = new ArrayList<Word>();
         HashSet<String> dupSet = new HashSet<String>(); /* Checks for dups */
         int bigWords = 0;
@@ -167,7 +168,6 @@ public class Dictionary {
                 | ErrorHandler.UndersizeException exc) {
             exc.printStackTrace();
             errorMessage = exc.getStackTrace().toString();
-            return null;
         }
         return resultsWords.toArray(new Word[resultsWords.size()]);
     }

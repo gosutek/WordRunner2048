@@ -23,7 +23,3 @@
 hs_err_pid*
 
 /doc/
-/lib/
-/releases/
-run.sh
-.vscode
