@@ -16,7 +16,7 @@ public class Session {
     private Word hiddenWord, guessWord;
     private ArrayList<Word> candidateWords = new ArrayList<Word>();
     private List<Map<String, Double>> probs = new ArrayList<Map<String, Double>>(); // Maps probabilities of letters for all positions
-    private int score, tries, lives = 0;
+    private int score, tries, correctTries, lives = 0;
 
 
     Session(Dictionary dictionary) {
@@ -30,6 +30,10 @@ public class Session {
                 candidateWords.add(word);
             }
         }
+    }
+
+    public int getCorrectTries() {
+        return correctTries;
     }
 
     public int getTries() {
@@ -122,6 +126,7 @@ public class Session {
     public boolean nextState(String input, int pos) {
         tries++;
         if (updateCandidates(input, pos)) {
+            correctTries++;
             guessWord.replaceLetter(input, pos);
             return true;
         } else {

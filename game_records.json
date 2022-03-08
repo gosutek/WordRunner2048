@@ -13,6 +13,25 @@
 			"datetime": "2022-03-08 12:48:45.160210876",
 			"hidden-word": "UNCOVERS",
 			"outcome": "LOST"
+		},
+		{
+			"number-of-tries": "7",
+			"score": 55,
+			"datetime": "2022-03-08 12:55:46.162978827",
+			"hidden-word": "SEARCH",
+			"outcome": "WON"
+		},
+		{
+			"number-of-tries": "0",
+			"score": 0,
+			"datetime": "2022-03-08 12:57:14.255069688",
+			"hidden-word": "KINGDOM"
+		},
+		{
+			"number-of-tries": "7",
+			"score": 30,
+			"datetime": "2022-03-08 13:03:46.082026175",
+			"hidden-word": "CHILDREN"
 		}
 	]
 }

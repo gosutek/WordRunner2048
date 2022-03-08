@@ -41,7 +41,7 @@ public class SessionGUI extends GridPane {
     private HBox guessWordBox, inputBox, candidateWordBox;
     private VBox leftPane;
     private Label wordCountLabel, scoreLabel, percentageLabel, inputLabel, solutionLabel, gameOverLabel;
-    private double percentage;
+    private float percentage;
     private int wordCount, score, userLetterSelection;
     private final TextField userInput;
     private Dictionary activeDictionary;
@@ -70,7 +70,7 @@ public class SessionGUI extends GridPane {
         userLetterSelection = -1;
 
         score = 0;
-        percentage = 0.00;
+        percentage = 0f;
 
         this.setMinSize(windowWidth, windowHeigth);
         this.setMaxSize(windowWidth, windowHeigth);
@@ -95,7 +95,7 @@ public class SessionGUI extends GridPane {
 
         wordCountLabel = new Label("Remaining words: " + Integer.toString(wordCount));
         scoreLabel = new Label("Score: " + Integer.toString(score));
-        percentageLabel = new Label("Correct word %: " + Double.toString(percentage));
+        percentageLabel = new Label("Correct letters: " + Double.toString(percentage) + "%");
         inputLabel = new Label("Input(ENTER):");
         solutionLabel = new Label(session.getHiddenWord().toString());
         solutionLabel.setOpacity(0);
@@ -406,6 +406,8 @@ public class SessionGUI extends GridPane {
                         gameOverLabel.setOpacity(1);
                     }
                     scoreLabel.setText("Score: " + Integer.toString(session.getScore()));
+                    percentage = 100 * ((float) session.getCorrectTries() / session.getTries());
+                    percentageLabel.setText("Correct letters: " + String.format("%.2f", percentage) + "%");
                 }
                 
             }
