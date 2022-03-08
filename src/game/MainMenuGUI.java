@@ -17,6 +17,7 @@ import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.BoxBlur;
@@ -103,7 +104,7 @@ public class MainMenuGUI extends Pane{
 
             @Override
             public void handle(ActionEvent arg0) {
-                titleFadeOut.stop(); // unecessary?
+                titleFadeOut.stop();
                 createMainMenuButtons();
                 mainMenuFadeInAnimation();
             }
@@ -409,6 +410,27 @@ public class MainMenuGUI extends Pane{
         downloadDictionaryTimeline.play();
     }
 
+    private void setBackButtonHandlers(SessionGUI sessionGUI, Button backBtn) {
+        backBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent arg0) {
+                Session currentSession = sessionGUI.getSession();
+                graphics.getChildren().add(title);
+                thisObj.getChildren().remove(sessionGUI);
+                String outcome = (sessionGUI.getOutcome() == null) ? "LOST" : sessionGUI.getOutcome();
+                RecordGame record = new RecordGame(
+                    currentSession.getHiddenWord().toString(), 
+                    outcome,
+                    currentSession.getTries(),
+                    currentSession.getScore()
+                );
+                record.save();
+                createMainMenuButtons();
+                mainMenuFadeInAnimation();
+            }
+        });
+    }
+
     private void loadingSubject(MainMenuGUI thisObj, SubjectRequester subjectRequester, WorksRequester worksRequester, String subject, Label feedback) {
         Task<SessionGUI> subjectTask = new Task<SessionGUI>() {
 
@@ -465,6 +487,7 @@ public class MainMenuGUI extends Pane{
                         public void handle(ActionEvent arg0) {
                             buttons.getChildren().removeAll(feedback);
                             thisObj.getChildren().add(subjectTask.getValue());
+                            setBackButtonHandlers(subjectTask.getValue(), subjectTask.getValue().getReturnButton());
                         }
                     });
                 }
@@ -532,23 +555,7 @@ public class MainMenuGUI extends Pane{
             @Override
             public void handle(WorkerStateEvent t) {
                 thisObj.getChildren().add(offlineTask.getValue());
-                offlineTask.getValue().getReturnButton().setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent arg0) {
-                        Session currentSession = offlineTask.getValue().getSession();
-                        graphics.getChildren().add(title);
-                        thisObj.getChildren().remove(offlineTask.getValue());
-                        RecordGame record = new RecordGame(
-                            currentSession.getHiddenWord().toString(), 
-                            offlineTask.getValue().getOutcome(),
-                            currentSession.getTries(),
-                            currentSession.getScore()
-                        );
-                        record.save();
-                        createMainMenuButtons();
-                        mainMenuFadeInAnimation();
-                    }
-                });
+                setBackButtonHandlers(offlineTask.getValue(), offlineTask.getValue().getReturnButton());
             }
         });
         offlineTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
@@ -591,6 +598,7 @@ public class MainMenuGUI extends Pane{
                 graphics.getChildren().remove(title);
                 buttons.getChildren().removeAll(customIDBox, back);
                 thisObj.getChildren().add(customTask.getValue());
+                setBackButtonHandlers(customTask.getValue(), customTask.getValue().getReturnButton());
             }
         });
         customTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
@@ -603,7 +611,7 @@ public class MainMenuGUI extends Pane{
 
     private void startLoadingSequence(MainMenuGUI thisObj, String dictionaryID) {
 
-        Task<SessionGUI> LoadTask = new Task<SessionGUI>() {
+        Task<SessionGUI> loadTask = new Task<SessionGUI>() {
 
             @Override
             protected SessionGUI call() throws Exception {
@@ -622,20 +630,21 @@ public class MainMenuGUI extends Pane{
             }
         };
 
-        Thread loadThread = new Thread(LoadTask);
+        Thread loadThread = new Thread(loadTask);
         loadThread.setDaemon(true);
         loadThread.start();
 
-        LoadTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+        loadTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
             @Override
             public void handle(WorkerStateEvent t) {
                 graphics.getChildren().remove(title);
                 buttons.getChildren().removeAll(back);
-                thisObj.getChildren().add(LoadTask.getValue());
+                thisObj.getChildren().add(loadTask.getValue());
+                setBackButtonHandlers(loadTask.getValue(), loadTask.getValue().getReturnButton());
             }
         });
-        LoadTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
+        loadTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent evt) {
             }

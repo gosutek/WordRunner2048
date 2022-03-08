@@ -1,28 +1,21 @@
 package game;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Scanner;
 
 import org.json.*;
 
 public class RecordGame {
 
-    private final String dateTime, hiddenWord, outcome;
-    private final int numberOfTries;
+    private final String dateTime;
     private final File recordFile = new File("game_records.json");
     private JSONObject jsonObject = new JSONObject();
 
     RecordGame(String hiddenWord, String outcome, int numberOfTries, int score) {
 
-        this.hiddenWord = hiddenWord;
-        this.outcome = outcome;
-        this.numberOfTries = numberOfTries;
         dateTime = java.time.LocalDateTime.now().toString().replaceAll("T", " ");
         jsonObject.put("hidden-word", hiddenWord);
         jsonObject.put("outcome", outcome);

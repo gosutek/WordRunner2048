@@ -1,6 +1,5 @@
 package game;
 
-import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import dictionary.Dictionary;
@@ -13,7 +12,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -37,11 +35,11 @@ import javafx.util.Duration;
 public class SessionGUI extends GridPane {
     
     private final float windowWidth = 1600;
-    private final float windowHeigth = 900;
+    //windowHeight = 900
 
     private Session session;
-    private String input, outcome;
-    private HBox guessWordBox, inputBox, candidateWordBox;
+    private String outcome;
+    private HBox guessWordBox, candidateWordBox;
     private VBox leftPane;
     private Label wordCountLabel, scoreLabel, percentageLabel, inputLabel, solutionLabel, gameOverLabel;
     private float percentage;
@@ -68,20 +66,18 @@ public class SessionGUI extends GridPane {
 
         leftPane = new VBox(10);
         guessWordBox = new HBox(10);
-        inputBox = new HBox(10);
         candidateWordBox = new HBox(10);
         userLetterSelection = -1;
 
         score = 0;
         percentage = 0f;
 
-        ColumnConstraints columnConstraints = new ColumnConstraints(533.3333, 533.333, Double.MAX_VALUE, Priority.ALWAYS, HPos.CENTER, true);
+        ColumnConstraints columnConstraints = new ColumnConstraints(windowWidth / 3, windowWidth / 3, Double.MAX_VALUE, Priority.ALWAYS, HPos.CENTER, true);
         this.getColumnConstraints().addAll(columnConstraints, columnConstraints, columnConstraints);
         RowConstraints topRowConstraints = new RowConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, VPos.CENTER, true);
         RowConstraints graphicsRowConstraints = new RowConstraints(600, 600, Double.MAX_VALUE, Priority.ALWAYS, VPos.CENTER, true);
         this.getRowConstraints().addAll(topRowConstraints, graphicsRowConstraints);
         this.setAlignment(Pos.CENTER);
-        //this.setGridLinesVisible(true);
 
 
         activeDictionary = dictionary;
@@ -121,7 +117,6 @@ public class SessionGUI extends GridPane {
 
 
 
-        //this.setPadding(new Insets(20, 20, 20, 20));
         this.add(wordCountLabel, 0, 0);
         this.add(scoreLabel, 1, 0);
         GridPane.setHalignment(scoreLabel, HPos.CENTER);
@@ -155,10 +150,6 @@ public class SessionGUI extends GridPane {
     private void setUserLetterSelection(int input) {
         userLetterSelection = input;
         updateCandidateWordLabel(userLetterSelection);
-    }
-
-    private void setUserInputSelection(String input) {
-        this.input = input;
     }
 
     private void createBottomButtons() {

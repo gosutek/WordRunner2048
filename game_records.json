@@ -24,14 +24,16 @@
 		{
 			"number-of-tries": "0",
 			"score": 0,
-			"datetime": "2022-03-08 12:57:14.255069688",
-			"hidden-word": "KINGDOM"
+			"datetime": "2022-03-08 13:33:43.965952768",
+			"hidden-word": "PUBLISHED",
+			"outcome": "LOST"
 		},
 		{
-			"number-of-tries": "7",
-			"score": 30,
-			"datetime": "2022-03-08 13:03:46.082026175",
-			"hidden-word": "CHILDREN"
+			"number-of-tries": "0",
+			"score": 0,
+			"datetime": "2022-03-08 13:41:26.431341973",
+			"hidden-word": "CONRAD",
+			"outcome": "LOST"
 		}
 	]
 }

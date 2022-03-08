@@ -3,7 +3,6 @@ package game;
 import dictionary.*;
 
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -76,8 +75,6 @@ public class Session {
             mapProbs.replaceAll((key, value) -> value / candidateWords.size()); // Divide occurance by the number of candidate words = probability of the letter
             probs.add(mapProbs);
         }
-        //probs.forEach(elem -> System.out.println(elem.values()));
-        //probs.forEach(elem -> System.out.println(elem.keySet()));
     }
     /*
      * Method that updates the candidate set, based on the users chosen letter at a posistion(pos).
