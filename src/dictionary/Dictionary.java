@@ -145,9 +145,7 @@ public class Dictionary {
             }
         }
         numberOfWords = resultsWords.size();
-        dictionaryStatistics[0] = (float) sixLetterWords / numberOfWords;
-        dictionaryStatistics[1] = (float) sevenToNineLetterWords / numberOfWords;
-        dictionaryStatistics[2] = (float) tenOrMoreLetterWords / numberOfWords;
+        calcDictionaryStatistics(sixLetterWords, sevenToNineLetterWords, tenOrMoreLetterWords);
         try {
             if (numberOfWords == 0) {
                 throw new ArithmeticException("Zero total length");
@@ -185,13 +183,17 @@ public class Dictionary {
             }
             reader.close();
             numberOfWords = wordList.size();
-            dictionaryStatistics[0] = ((float) sixLetterWords / numberOfWords) * 100;
-            dictionaryStatistics[1] = ((float) sevenToNineLetterWords / numberOfWords) * 100;
-            dictionaryStatistics[2] = ((float) tenOrMoreLetterWords / numberOfWords) * 100;
+            calcDictionaryStatistics(sixLetterWords, sevenToNineLetterWords, tenOrMoreLetterWords);
         } catch (FileNotFoundException exc) {
             exc.printStackTrace();
         }
         return wordList.toArray(new Word[wordList.size()]);
+    }
+
+    private void calcDictionaryStatistics(int sixLetterWords, int sevenToNineLetterWords, int tenOrMoreLetterWords) {
+        dictionaryStatistics[0] = ((float) sixLetterWords / numberOfWords) * 100;
+        dictionaryStatistics[1] = ((float) sevenToNineLetterWords / numberOfWords) * 100;
+        dictionaryStatistics[2] = ((float) tenOrMoreLetterWords / numberOfWords) * 100;
     }
 
 }
