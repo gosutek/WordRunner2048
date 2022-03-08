@@ -3,13 +3,9 @@ package dictionary;
 public class Letter {
     
     private String value;
-    private Word word;
-    private int pos;
 
     Letter(String letter, int pos, Word word) {
         value = letter;
-        this.pos = pos;
-        this.word = word;
     }
 
     @Override

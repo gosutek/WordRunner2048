@@ -140,7 +140,6 @@ public class Dictionary {
                 resultsWords.add(new Word(word));
 
             } catch (ErrorHandler.InvalidRangeException | ErrorHandler.InvalidCountException exc) {
-                //exc.printStackTrace();
                 continue;
             }
         }
