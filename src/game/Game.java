@@ -1,5 +1,9 @@
 package game;
 
+import java.io.File;
+import java.io.IOException;
+
+import gui.MainMenuGUI;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -18,6 +22,11 @@ public class Game extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        File dictionaryFile = new File("dictionaries");
+        if(!dictionaryFile.exists()) {
+            dictionaryFile.mkdir();
+        }
+
         this.mainMenuGUI = new MainMenuGUI();
         Scene startScene = new Scene(mainMenuGUI, windowWidth, windowHeigth, true);
         startScene.setFill(Color.BLACK);
@@ -25,7 +34,7 @@ public class Game extends Application {
 
         stage.setTitle("Word Runner 2048");
 
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("../graphics/icon.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
         stage.setScene(startScene);
         stage.setResizable(false);
         startScene.getStylesheets().add(Game.class.getResource("Game.css").toExternalForm());

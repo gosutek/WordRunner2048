@@ -14,7 +14,7 @@ public class RecordGame {
     private final File recordFile = new File("game_records.json");
     private JSONObject jsonObject = new JSONObject();
 
-    RecordGame(String hiddenWord, String outcome, int numberOfTries, int score) {
+    public RecordGame(String hiddenWord, String outcome, int numberOfTries, int score) {
 
         dateTime = java.time.LocalDateTime.now().toString().replaceAll("T", " ");
         jsonObject.put("hidden-word", hiddenWord);

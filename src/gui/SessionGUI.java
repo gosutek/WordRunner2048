@@ -1,4 +1,4 @@
-package game;
+package gui;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +10,7 @@ import org.json.*;
 
 import dictionary.Dictionary;
 import dictionary.Word;
+import game.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -60,13 +61,13 @@ public class SessionGUI extends GridPane {
     private Label[] guessWordLabelArray;
 
     private final CustomGraphics[] crossWordGraphics = {
-        new CustomGraphics(this.getClass().getResourceAsStream("../graphics/hang0.png"), 500, 500, 1.0),
-        new CustomGraphics(this.getClass().getResourceAsStream("../graphics/hang1.png"), 500, 500, 1.0),
-        new CustomGraphics(this.getClass().getResourceAsStream("../graphics/hang2.png"), 500, 500, 1.0),
-        new CustomGraphics(this.getClass().getResourceAsStream("../graphics/hang3.png"), 500, 500, 1.0),
-        new CustomGraphics(this.getClass().getResourceAsStream("../graphics/hang4.png"), 500, 500, 1.0),
-        new CustomGraphics(this.getClass().getResourceAsStream("../graphics/hang5.png"), 500, 500, 1.0),
-        new CustomGraphics(this.getClass().getResourceAsStream("../graphics/hang6.png"), 500, 500, 1.0),
+        new CustomGraphics(this.getClass().getResourceAsStream("graphics/hang0.png"), 500, 500, 1.0),
+        new CustomGraphics(this.getClass().getResourceAsStream("graphics/hang1.png"), 500, 500, 1.0),
+        new CustomGraphics(this.getClass().getResourceAsStream("graphics/hang2.png"), 500, 500, 1.0),
+        new CustomGraphics(this.getClass().getResourceAsStream("graphics/hang3.png"), 500, 500, 1.0),
+        new CustomGraphics(this.getClass().getResourceAsStream("graphics/hang4.png"), 500, 500, 1.0),
+        new CustomGraphics(this.getClass().getResourceAsStream("graphics/hang5.png"), 500, 500, 1.0),
+        new CustomGraphics(this.getClass().getResourceAsStream("graphics/hang6.png"), 500, 500, 1.0),
 
     };
 
@@ -184,13 +185,13 @@ public class SessionGUI extends GridPane {
         returnButton = new Button("Back");
         returnButton.setId("session-gui-back");
 
-        button_1.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 200, 200, 0.5));
+        button_1.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("graphics/button.png"), 200, 200, 0.5));
         button_1.setContentDisplay(ContentDisplay.CENTER);
-        button_2.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 200, 200, 0.5));
+        button_2.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("graphics/button.png"), 200, 200, 0.5));
         button_2.setContentDisplay(ContentDisplay.CENTER);
-        button_3.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 200, 200, 0.5));
+        button_3.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("graphics/button.png"), 200, 200, 0.5));
         button_3.setContentDisplay(ContentDisplay.CENTER);
-        returnButton.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("../graphics/button.png"), 200, 200, 0.5));
+        returnButton.setGraphic(new CustomGraphics(this.getClass().getResourceAsStream("graphics/button.png"), 200, 200, 0.5));
         returnButton.setContentDisplay(ContentDisplay.CENTER);
 
 

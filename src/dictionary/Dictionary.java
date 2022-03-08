@@ -29,7 +29,7 @@ public class Dictionary {
 
     public Dictionary(File dictionary) {
         dictionaryID = dictionary.getName().replace("hangman_", "").replace(".txt", "");
-        pathToDictionary = "./medialab/hangman_" + dictionaryID + ".txt";
+        pathToDictionary = "./dictionaries/hangman_" + dictionaryID + ".txt";
         dictionaryBook = "null";
         dictionaryContents = readExistingDictionary(dictionary);
         numberOfWords = dictionaryContents.length;
@@ -38,7 +38,7 @@ public class Dictionary {
     public Dictionary(String url) {
         url = "https://openlibrary.org" + url + ".json";
         dictionaryID = url.replace("https://openlibrary.org/works/", "").replace(".json", "");
-        pathToDictionary = "./medialab/hangman_" + dictionaryID + ".txt";
+        pathToDictionary = "./dictionaries/hangman_" + dictionaryID + ".txt";
 
         File dictionaryFile = new File(pathToDictionary);
         if (!dictionaryFile.exists()) {

@@ -1,4 +1,4 @@
-package game;
+package gui;
 
 import java.io.File;
 
@@ -15,7 +15,7 @@ import javafx.scene.layout.GridPane;
 
 public class LoadListView extends GridPane {
 
-    private final File dictionaryDir = new File("./medialab");
+    private final File dictionaryDir = new File("./dictionaries");
     private final File[] dictionaryArr = dictionaryDir.listFiles();
     private ObservableList<String> items = FXCollections.observableArrayList();
     private ListView<String> list = new ListView<String>();

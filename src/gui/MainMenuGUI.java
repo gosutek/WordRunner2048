@@ -1,4 +1,4 @@
-package game;
+package gui;
 
 import requesters.SubjectRequester;
 import requesters.WorksRequester;
@@ -7,6 +7,8 @@ import java.io.File;
 import java.util.Random;
 
 import dictionary.Dictionary;
+import game.RecordGame;
+import game.Session;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -47,9 +49,10 @@ public class MainMenuGUI extends Pane{
     private CustomButton button_1, button_2, button_3, button_4, button_5, back;
     private SubScene gridScene;
     private Group graphics, buttons;
+    private Label emptyDictionaryDirectoryLabel;
     private final MainMenuGUI thisObj = this;
 
-    MainMenuGUI() {
+    public MainMenuGUI() {
 
         this.prefWidth(windowWidth);
         this.prefHeight(windowHeigth);
@@ -84,8 +87,8 @@ public class MainMenuGUI extends Pane{
 
     private void createGraphics() {
 
-        this.title = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/title_icon.png"), 800.0, 801.0, 1.0);
-        this.press_start = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/press_start_cropped.png"), 1024.0, 1600.0, 1.0);
+        this.title = new CustomGraphics(this.getClass().getResourceAsStream("graphics/title_icon.png"), 800.0, 801.0, 1.0);
+        this.press_start = new CustomGraphics(this.getClass().getResourceAsStream("graphics/press_start_cropped.png"), 1024.0, 1600.0, 1.0);
 
         title.setTranslateX(windowWidth / 4);
         title.setTranslateY(-30);
@@ -175,7 +178,7 @@ public class MainMenuGUI extends Pane{
 
         this.back = new CustomButton("Back", windowWidth / 2 - windowWidth / 10, 2000);
 
-        CustomGraphics helpButton = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/question_mark.png"), 50.0, 50.0, 1.0);
+        CustomGraphics helpButton = new CustomGraphics(this.getClass().getResourceAsStream("graphics/question_mark.png"), 50.0, 50.0, 1.0);
         helpButton.setTranslateX(25);
         helpButton.setTranslateY(25);
 
@@ -235,7 +238,7 @@ public class MainMenuGUI extends Pane{
                 if (!graphics.getChildren().contains(title)) {
                     graphics.getChildren().add(title);
                 }
-                thisObj.getChildren().remove(list);
+                thisObj.getChildren().removeAll(list, emptyDictionaryDirectoryLabel);
                 buttons.getChildren().removeAll(button_1, button_2, button_3, back, helpButton);
                 createMainMenuButtons();
                 mainMenuFadeInAnimation();
@@ -392,6 +395,7 @@ public class MainMenuGUI extends Pane{
             @Override
             public void handle(MouseEvent arg0) {
                 customIDBox.setOpacity(0);
+                thisObj.getChildren().remove(emptyDictionaryDirectoryLabel);
                 buttons.getChildren().removeAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back);
                 button_1.revertToDefault();
                 button_2.revertToDefault();
@@ -547,12 +551,16 @@ public class MainMenuGUI extends Pane{
 
     private void startRandomSession(MainMenuGUI thisObj) {
 
-        File directory = new File("./medialab");
+        File directory = new File("./dictionaries");
         File[] dirArr = directory.listFiles();
         Random rng = new Random();
 
         if (dirArr.length == 0) {
-            System.out.println("Dictionary directory is empty");
+            emptyDictionaryDirectoryLabel = new Label("No local dictionaries found!\n Try downloading one.");
+            emptyDictionaryDirectoryLabel.setTranslateX(windowWidth / 2 - windowWidth / 5 + 150);
+            emptyDictionaryDirectoryLabel.setTranslateY(375);
+            this.getChildren().add(emptyDictionaryDirectoryLabel);
+            buttons.getChildren().add(back);
             return;
         }
 
@@ -645,7 +653,7 @@ public class MainMenuGUI extends Pane{
             protected SessionGUI call() throws Exception {
                 SessionGUI sessionGUI;
                 Dictionary dictionary;
-                File dictionaryPath = new File("./medialab/hangman_" + dictionaryID + ".txt");
+                File dictionaryPath = new File("./dictionaries/hangman_" + dictionaryID + ".txt");
                 try {
                     dictionary = new Dictionary(dictionaryPath);
                     sessionGUI = new SessionGUI(dictionary);

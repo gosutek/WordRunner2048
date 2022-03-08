@@ -18,7 +18,7 @@ public class Session {
     private int score, tries, correctTries, lives = 0;
 
 
-    Session(Dictionary dictionary) {
+    public Session(Dictionary dictionary) {
         activeDictionary = dictionary;
 
         Random rng = new Random();
@@ -59,7 +59,7 @@ public class Session {
         return hiddenWord;
     }
 
-    void calcProb() {
+    public void calcProb() {
         probs.clear();
         for (int i = 0; i < hiddenWord.length(); i++) {     //For letter at position 0
             Map<String, Double> mapProbs = new HashMap<String, Double>(); // Stores the probabilities of letters for a given position
@@ -80,7 +80,7 @@ public class Session {
      * Method that updates the candidate set, based on the users chosen letter at a posistion(pos).
      * Returns true if the guess was correct and false when not.
      */
-    boolean updateCandidates(String chosenLetter, int pos) {
+    private boolean updateCandidates(String chosenLetter, int pos) {
         if(hiddenWord.getLetters()[pos].value().equals(chosenLetter)) {  // correct choice
             double choosenProb = probs.get(pos).get(chosenLetter);
             if (choosenProb >= 0.6) {
