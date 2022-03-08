@@ -26,8 +26,11 @@ import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -72,8 +75,11 @@ public class SessionGUI extends GridPane {
         score = 0;
         percentage = 0f;
 
-        this.setMinSize(windowWidth, windowHeigth);
-        this.setMaxSize(windowWidth, windowHeigth);
+        ColumnConstraints columnConstraints = new ColumnConstraints(533.3333, 533.333, Double.MAX_VALUE, Priority.ALWAYS, HPos.CENTER, true);
+        this.getColumnConstraints().addAll(columnConstraints, columnConstraints, columnConstraints);
+        RowConstraints topRowConstraints = new RowConstraints(50, 50, Double.MAX_VALUE, Priority.ALWAYS, VPos.CENTER, true);
+        RowConstraints graphicsRowConstraints = new RowConstraints(600, 600, Double.MAX_VALUE, Priority.ALWAYS, VPos.CENTER, true);
+        this.getRowConstraints().addAll(topRowConstraints, graphicsRowConstraints);
         this.setAlignment(Pos.CENTER);
         //this.setGridLinesVisible(true);
 
@@ -248,7 +254,7 @@ public class SessionGUI extends GridPane {
         if (targetGridPane == null) {
             this.getChildren().remove(targetVBox);
             this.add(detailsPane, 0, 1);
-            detailsPane.setAlignment(Pos.CENTER_LEFT);
+            detailsPane.setAlignment(Pos.CENTER);
             button_2.setDisable(true);
             button_3.setDisable(true);
             userInput.setDisable(true);
