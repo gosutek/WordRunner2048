@@ -1,7 +1,6 @@
 package game;
 
 import java.io.File;
-import java.io.IOException;
 
 import gui.MainMenuGUI;
 import javafx.application.Application;
