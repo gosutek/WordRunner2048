@@ -18,7 +18,7 @@ public class RecordGame {
     private final File recordFile = new File("game_records.json");
     private JSONObject jsonObject = new JSONObject();
 
-    RecordGame(String hiddenWord, String outcome, int numberOfTries) {
+    RecordGame(String hiddenWord, String outcome, int numberOfTries, int score) {
 
         this.hiddenWord = hiddenWord;
         this.outcome = outcome;
@@ -28,14 +28,13 @@ public class RecordGame {
         jsonObject.put("outcome", outcome);
         jsonObject.put("number-of-tries", ((Integer) numberOfTries).toString());
         jsonObject.put("datetime", dateTime);
+        jsonObject.put("score", score);
         try {
             if (!recordFile.exists()) {
                 FileWriter jsonWriter = new FileWriter(recordFile);
                 recordFile.createNewFile();
                 jsonWriter.write(createJSON().toString());
                 jsonWriter.close();
-            } else {
-                save();
             }
         } catch (IOException exc) {
             exc.printStackTrace();
@@ -52,8 +51,8 @@ public class RecordGame {
         return main;
     }
 
-    private JSONObject save() {
-        JSONObject main = (JSONObject) new JSONTokener(readJSON()).nextValue();
+    public JSONObject save() {
+        JSONObject main = (JSONObject) new JSONTokener(JSONFileToString()).nextValue();
         JSONArray mainArr = main.getJSONArray("records");
         mainArr.put(jsonObject);
 
@@ -69,13 +68,14 @@ public class RecordGame {
         
     }
 
-    private String readJSON() {
+    private String JSONFileToString() {
         StringBuilder jsonString = new StringBuilder();
         try {
             Scanner stringScanner = new Scanner(recordFile);
             while(stringScanner.hasNextLine()) {
                 jsonString.append(stringScanner.nextLine());
             }
+            stringScanner.close();
         } catch (FileNotFoundException exc) {
             exc.printStackTrace();
             jsonString = null;

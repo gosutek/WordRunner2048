@@ -538,7 +538,13 @@ public class MainMenuGUI extends Pane{
                         Session currentSession = offlineTask.getValue().getSession();
                         graphics.getChildren().add(title);
                         thisObj.getChildren().remove(offlineTask.getValue());
-                        RecordGame record = new RecordGame(currentSession.getHiddenWord().toString(), "Lost", 0);
+                        RecordGame record = new RecordGame(
+                            currentSession.getHiddenWord().toString(), 
+                            offlineTask.getValue().getOutcome(),
+                            currentSession.getTries(),
+                            currentSession.getScore()
+                        );
+                        record.save();
                         createMainMenuButtons();
                         mainMenuFadeInAnimation();
                     }

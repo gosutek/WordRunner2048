@@ -5,6 +5,9 @@ import java.util.regex.Pattern;
 
 import dictionary.Dictionary;
 import dictionary.Word;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -26,6 +29,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 public class SessionGUI extends GridPane {
     
@@ -33,7 +37,7 @@ public class SessionGUI extends GridPane {
     private final float windowHeigth = 900;
 
     private Session session;
-    private String input;
+    private String input, outcome;
     private HBox guessWordBox, inputBox, candidateWordBox;
     private VBox leftPane;
     private Label wordCountLabel, scoreLabel, percentageLabel, inputLabel, solutionLabel, gameOverLabel;
@@ -43,6 +47,7 @@ public class SessionGUI extends GridPane {
     private Dictionary activeDictionary;
     private Button button_1, button_2, button_3, returnButton;
     private final GridPane detailsPane;
+    private Label[] guessWordLabelArray;
 
     private final CustomGraphics[] crossWordGraphics = {
         new CustomGraphics(this.getClass().getResourceAsStream("../graphics/hang0.png"), 500, 500, 1.0),
@@ -62,6 +67,7 @@ public class SessionGUI extends GridPane {
         guessWordBox = new HBox(10);
         inputBox = new HBox(10);
         candidateWordBox = new HBox(10);
+        userLetterSelection = -1;
 
         score = 0;
         percentage = 0.00;
@@ -93,7 +99,7 @@ public class SessionGUI extends GridPane {
         inputLabel = new Label("Input(ENTER):");
         solutionLabel = new Label(session.getHiddenWord().toString());
         solutionLabel.setOpacity(0);
-        gameOverLabel = new Label("Game Over");
+        gameOverLabel = new Label("Wrong!");
         gameOverLabel.setOpacity(0);
         gameOverLabel.setId("game-over-label");
 
@@ -128,16 +134,21 @@ public class SessionGUI extends GridPane {
         GridPane.setHalignment(gameOverLabel, HPos.CENTER);
         GridPane.setValignment(gameOverLabel, VPos.CENTER);
         createBottomButtons();
-
-        play(session);
+        createGuessWordLabels(session.initialize());
+        selectNextSpace();
 
     }
-    protected Session getSession() {
+
+    public String getOutcome() {
+        return outcome;
+    }
+
+    public Session getSession() {
         return session;
     }
     private void setUserLetterSelection(int input) {
         userLetterSelection = input;
-        updateCandidateWordLabel(session, userLetterSelection);
+        updateCandidateWordLabel(userLetterSelection);
     }
 
     private void setUserInputSelection(String input) {
@@ -196,6 +207,15 @@ public class SessionGUI extends GridPane {
 
         });
 
+        button_2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            
+            @Override
+            public void handle(MouseEvent arg0) {
+
+            }
+
+        });
+
         button_3.setOnMouseClicked(new EventHandler<MouseEvent>() {
             
             @Override
@@ -245,18 +265,22 @@ public class SessionGUI extends GridPane {
 
     private void changeHangmanGraphics(CustomGraphics newVal) {
         ObservableList<Node> cells = this.getChildren();
+        Node targetNode = null;
         for (Node elem : cells) {
             int row = GridPane.getRowIndex(elem);
             int column = GridPane.getColumnIndex(elem);
             if (elem instanceof CustomGraphics && row == 1 && column == 1) {
-                this.getChildren().remove(elem);
-                this.add(newVal, 1, 1);
-                GridPane.setHalignment(newVal, HPos.CENTER);
+                targetNode = elem;
+                break;
             }
         }
+        this.getChildren().remove(targetNode);
+        this.add(newVal, 1, 1);
+        GridPane.setHalignment(newVal, HPos.CENTER);
+        
     }
 
-    private void updateCandidateWordLabel(Session session, int pos) {
+    private void updateCandidateWordLabel(int pos) {
         session.calcProb();
         candidateWordBox.getChildren().clear();
         Label[] candidateWordLabelArray = new Label[session.getCandidateLetters(pos).length];
@@ -266,12 +290,12 @@ public class SessionGUI extends GridPane {
         }
     }
 
-    private void updateGuessWordLabel(Word hiddenWord, Word guessWord) {
-
+    private void updateGuessWordLabel(String input, int pos) {
+        guessWordLabelArray[pos].setText(input);
     }
 
     private void createGuessWordLabels(Word guessWord) {
-        Label[] guessWordLabelArray = new Label[guessWord.length()];
+        guessWordLabelArray = new Label[guessWord.length()];
         for (int idx = 0; idx < guessWord.length(); idx++) {
             guessWordLabelArray[idx] = new Label(guessWord.getLetters()[idx].toString());
             guessWordBox.getChildren().add(guessWordLabelArray[idx]);
@@ -311,7 +335,9 @@ public class SessionGUI extends GridPane {
     private void setTextFieldHandler(TextField input) {
 
         Pattern alphaBetaPattern = Pattern.compile("[a-zA-Z]*");
-
+        /**
+         * Ensures that the user input will be of length 1.
+         */
         input.lengthProperty().addListener(new ChangeListener<Number>() {
 
             @Override
@@ -324,7 +350,9 @@ public class SessionGUI extends GridPane {
             }
             
         });
-
+        /**
+         * Ensures that the user input will be capitalized.
+         */
         input.setTextFormatter(new TextFormatter<>((text) -> {
             if (alphaBetaPattern.matcher(text.getText()).matches()) {
                 text.setText(text.getText().toUpperCase());
@@ -339,7 +367,45 @@ public class SessionGUI extends GridPane {
             @Override
             public void handle(KeyEvent arg0) {
                 if (arg0.getCode() == KeyCode.ENTER) {
-                    System.out.println(input.getText());
+                    System.out.println(session.getHiddenWord().toString());
+                    /* Correct input */
+                    if(session.nextState(input.getText(), userLetterSelection)) {
+                        updateGuessWordLabel(input.getText(), userLetterSelection);
+                        updateCandidateWordLabel(userLetterSelection);
+                        selectNextSpace();
+                        input.clear();
+                    } else {
+                        changeHangmanGraphics(crossWordGraphics[session.getLives()]);
+                        updateCandidateWordLabel(userLetterSelection);
+                        gameOverLabel.setText("Wrong!");
+                        gameOverLabel.setOpacity(1);
+                        Timeline gameOverLabelFadeOff = new Timeline(
+                            new KeyFrame(Duration.ZERO, new KeyValue(gameOverLabel.opacityProperty(), gameOverLabel.getOpacity())),
+                            new KeyFrame(new Duration(2000), new KeyValue(gameOverLabel.opacityProperty(), 0))
+                        );
+                        gameOverLabelFadeOff.play();
+                        if (session.getLives() >= 6) {
+                            gameOverLabelFadeOff.stop();
+                            gameOverLabel.setText("Game Over!");
+                            gameOverLabel.setOpacity(1);
+                            button_1.setDisable(true);
+                            button_2.setDisable(true);
+                            userInput.setDisable(true);
+                            outcome = "LOST";
+
+                        }
+
+                    }
+                    if (session.getGuessWord().equals(session.getHiddenWord())) {
+                        outcome = "WON";
+                        button_1.setDisable(true);
+                        button_2.setDisable(true);
+                        button_3.setDisable(true);
+                        userInput.setDisable(true);
+                        gameOverLabel.setText("You Win!");
+                        gameOverLabel.setOpacity(1);
+                    }
+                    scoreLabel.setText("Score: " + Integer.toString(session.getScore()));
                 }
                 
             }
@@ -347,46 +413,12 @@ public class SessionGUI extends GridPane {
         });
     }
 
-    void play(Session session) {
-        String input = new String();
-        Scanner scanner = new Scanner(System.in);
-        Word guessWord = new Word(session.getHiddenWord().toString().replaceAll("[A-Z]", "_"));
-        createGuessWordLabels(guessWord);
-        /* while(!guessWord.equals(session.getHiddenWord())) {
-            session.calcProb();
-        } */
-        
-        /* System.out.println(hiddenWord);
-        System.out.println(candidateWords);
-        while(!guessWord.equals(hiddenWord)) {
-            calcProb();
-            System.out.println("Input letter: ");
-            input = scanner.next();
-            System.out.println("Input pos: ");
-            
-            pos = scanner.nextInt();
-            while (!(pos instanceof Integer)) {
-                System.out.println("Posision must be a number");
-                pos = scanner.nextInt();
-            }
-            if (updateCandidates(input, pos)) {
-                System.out.println("Correct!");
-                guessWord.replaceLetter(input, pos);
-
-            } else {
-                System.out.println("False!");
-            }
-            if (lives >= 6) {
-                System.out.println("Game over");
-                System.out.println("Hidden word was: " + hiddenWord);
-                break;
-            }
-            System.out.println(candidateWords);
+    private void selectNextSpace() {
+        if (userLetterSelection < guessWordLabelArray.length - 1) {
+            guessWordBox.getChildren().forEach(elem -> elem.setStyle(null));
+            guessWordLabelArray[userLetterSelection + 1].setStyle("-fx-font-size: 40px;");
+            setUserLetterSelection(userLetterSelection + 1);
         }
-        if (guessWord.equals(hiddenWord)) {
-            System.out.println("You win!");
-        }
-        scanner.close(); */
     }
 
 }

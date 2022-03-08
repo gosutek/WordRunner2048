@@ -16,7 +16,7 @@ public class Session {
     private Word hiddenWord, guessWord;
     private ArrayList<Word> candidateWords = new ArrayList<Word>();
     private List<Map<String, Double>> probs = new ArrayList<Map<String, Double>>(); // Maps probabilities of letters for all positions
-    private int score, lives = 0;
+    private int score, tries, lives = 0;
 
 
     Session(Dictionary dictionary) {
@@ -31,11 +31,28 @@ public class Session {
             }
         }
     }
-    protected Dictionary getDictionary() {
+
+    public int getTries() {
+        return tries;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public Word getGuessWord() {
+        return guessWord;
+    }
+
+    public Dictionary getDictionary() {
         return activeDictionary;
     }
 
-    protected Word getHiddenWord() {
+    public Word getHiddenWord() {
         return hiddenWord;
     }
 
@@ -97,43 +114,20 @@ public class Session {
         return candidateLettersArr;
     }
 
-    void play() {
-        String input = new String();
-        Integer pos;
-        Scanner scanner = new Scanner(System.in);
+    public Word initialize() {
         guessWord = new Word(hiddenWord.toString().replaceAll("[A-Z]", "_"));
-        System.out.println(hiddenWord);
-        System.out.println(candidateWords);
-        while(!guessWord.equals(hiddenWord)) {
-            calcProb();
-            getCandidateLetters(0);
-            System.out.println("Input letter: ");
-            input = scanner.next();
-            System.out.println("Input pos: ");
-            
-            pos = scanner.nextInt();
-            while (!(pos instanceof Integer)) {
-                System.out.println("Posision must be a number");
-                pos = scanner.nextInt();
-            }
-            if (updateCandidates(input, pos)) {
-                System.out.println("Correct!");
-                guessWord.replaceLetter(input, pos);
+        return guessWord;
+    }
 
-            } else {
-                System.out.println("False!");
-            }
-            if (lives >= 6) {
-                System.out.println("Game over");
-                System.out.println("Hidden word was: " + hiddenWord);
-                break;
-            }
-            System.out.println(candidateWords);
+    public boolean nextState(String input, int pos) {
+        tries++;
+        if (updateCandidates(input, pos)) {
+            guessWord.replaceLetter(input, pos);
+            return true;
+        } else {
+            return false;
         }
-        if (guessWord.equals(hiddenWord)) {
-            System.out.println("You win!");
-        }
-        scanner.close();
+
     }
 
 }
