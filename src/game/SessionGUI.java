@@ -20,7 +20,10 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -40,7 +43,7 @@ public class SessionGUI extends GridPane {
     private Session session;
     private String outcome;
     private HBox guessWordBox, candidateWordBox;
-    private VBox leftPane;
+    private VBox leftPane, rightPane;
     private Label wordCountLabel, scoreLabel, percentageLabel, inputLabel, solutionLabel, gameOverLabel;
     private float percentage;
     private int wordCount, score, userLetterSelection;
@@ -48,6 +51,7 @@ public class SessionGUI extends GridPane {
     private Dictionary activeDictionary;
     private Button button_1, button_2, button_3, returnButton;
     private final GridPane detailsPane;
+    private final TreeView<String> recordsTree;
     private Label[] guessWordLabelArray;
 
     private final CustomGraphics[] crossWordGraphics = {
@@ -65,6 +69,8 @@ public class SessionGUI extends GridPane {
     SessionGUI(Dictionary dictionary) {
 
         leftPane = new VBox(10);
+        rightPane = new VBox(10);
+        rightPane.getChildren().add(new Label("Past games"));
         guessWordBox = new HBox(10);
         candidateWordBox = new HBox(10);
         userLetterSelection = -1;
@@ -88,10 +94,17 @@ public class SessionGUI extends GridPane {
         detailsPane = new GridPane(); 
 
         detailsPane.add(new Label("Dictionary Details"), 0, 0);
+        detailsPane.add(new Label(""), 0, 1);
         detailsPane.add(new Label(""), 0, 2);
         detailsPane.add(new Label("6 letters: " + String.format("%.2f", dictionaryStats[0]) + "%"), 0, 3);
         detailsPane.add(new Label("7 to 9 letters: " + String.format("%.2f", dictionaryStats[1])  + "%"), 0, 4);
         detailsPane.add(new Label("10 or more letters: " + String.format("%.2f", dictionaryStats[2]) + "%"), 0, 5);
+
+        TreeItem<String> test = new TreeItem<String>("Game1");
+        recordsTree = new TreeView<String>(test);
+
+        rightPane.getChildren().add(recordsTree);
+
 
         session = new Session(activeDictionary);
 
@@ -208,7 +221,7 @@ public class SessionGUI extends GridPane {
             
             @Override
             public void handle(MouseEvent arg0) {
-
+                replaceRightPane();
             }
 
         });
@@ -227,6 +240,37 @@ public class SessionGUI extends GridPane {
             }
         });
 
+    }
+
+    private void replaceRightPane() {
+        ObservableList<Node> cells = this.getChildren();
+        Node targetHbox, targetVBox;
+        targetHbox = targetVBox = null;
+        for (Node elem : cells) {
+            int row = GridPane.getRowIndex(elem);
+            int column = GridPane.getColumnIndex(elem);
+            if (elem instanceof HBox && row == 1 && column == 2) {
+                targetHbox = elem;
+            } else if (elem instanceof VBox && row == 1 && column == 2) {
+                targetVBox = elem;
+            }
+        }
+        if (targetHbox == null) {
+            this.getChildren().remove(targetVBox);
+            this.add(candidateWordBox, 2, 1);
+            candidateWordBox.setAlignment(Pos.CENTER);
+            button_1.setDisable(false);
+            button_3.setDisable(false);
+            userInput.setDisable(false);
+            returnButton.setDisable(false);
+        } else {
+            this.getChildren().remove(targetHbox);
+            this.add(rightPane, 2, 1);
+            button_1.setDisable(true);
+            button_3.setDisable(true);
+            userInput.setDisable(true);
+            returnButton.setDisable(true);
+        }
     }
 
     private void replaceLeftPane() {

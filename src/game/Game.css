@@ -133,6 +133,17 @@
     -fx-background-color: transparent;
 }
 
+.tree-cell {
+    -fx-font-size: 20px;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Fleftex";
+    -fx-background-color: transparent;
+}
+
+.tree-view {
+    -fx-background-color: transparent;
+}
+
 .scroll-bar {
     -fx-fill: transparent;
     -fx-background-color: transparent;
