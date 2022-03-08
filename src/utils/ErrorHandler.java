@@ -40,4 +40,11 @@ public abstract class ErrorHandler extends Exception{
         }
     }
 
+    public static class BannedWordException extends ErrorHandler {
+
+        public BannedWordException(String book, String str) {
+            super("Dictionary " + book + " contains a banned word: " + str);
+        }
+    }
+
 }

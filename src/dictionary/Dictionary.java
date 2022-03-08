@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.json.*;
 
@@ -21,6 +23,7 @@ public class Dictionary {
     private Word[] dictionaryContents;
     private float[] dictionaryStatistics = new float[3];
     private String errorMessage = null;
+    private final Set<String> bannedWordsSet = Set.<String>of("OPENLIBRARY");
 
     public Dictionary(){};
 
@@ -111,7 +114,7 @@ public class Dictionary {
     }
 
     private Word[] parseDictionary(String text) {
-        String[] formattedText = text.replaceAll("\\W", "\s").replaceAll("\\s", "\n").toUpperCase().split("\\s");
+        String[] formattedText = text.replaceAll("\\W", "\s").replaceAll("\\s", "\n").replaceAll("_", " ").toUpperCase().split("\\s");
         ArrayList<Word> resultsWords = new ArrayList<Word>();
         HashSet<String> dupSet = new HashSet<String>(); /* Checks for dups */
         int bigWords = 0;
@@ -122,6 +125,12 @@ public class Dictionary {
             try {
                 if (dupSet.contains(word)) {
                     throw new ErrorHandler.InvalidCountException(word);
+                }
+                if (bannedWordsSet.contains(word)) {
+                    throw new ErrorHandler.BannedWordException(dictionaryBook, word);
+                }
+                if (word.matches("OL[0-9]+[a-z]*[A-Z]*") || word.matches("[0-9]+")) {
+                    throw new ErrorHandler.BannedWordException(dictionaryBook, word);
                 }
                 dupSet.add(word);
                 if (word.length() < 6) {
@@ -139,7 +148,7 @@ public class Dictionary {
                 }
                 resultsWords.add(new Word(word));
 
-            } catch (ErrorHandler.InvalidRangeException | ErrorHandler.InvalidCountException exc) {
+            } catch (ErrorHandler.InvalidRangeException | ErrorHandler.InvalidCountException | ErrorHandler.BannedWordException exc) {
                 continue;
             }
         }
