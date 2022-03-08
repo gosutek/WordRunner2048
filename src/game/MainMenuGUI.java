@@ -26,6 +26,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.event.EventHandler;
@@ -162,20 +163,32 @@ public class MainMenuGUI extends Pane{
         button_2.setText("Load");
         button_2.setTranslateY(2000);
 
+        VBox helpBox = new VBox(30);
+        helpBox.setTranslateX(10);
+        helpBox.setTranslateY(100);
+        Label randomHelp = new Label("Random: Start a new game\nwith a random, existing dictionary.");
+        Label loadHelp = new Label("Load: Pick a dictionary manually.");
+        Label downloadHelp = new Label("Download: Pick among 4 predefined\nthemes to download. Alternatively,\nprovide a custom 'works ID'.");
+        helpBox.getChildren().addAll(randomHelp, loadHelp, downloadHelp);
+
         this.button_3 = new CustomButton("Download", windowWidth / 2 - windowWidth / 10, 2000);
 
         this.back = new CustomButton("Back", windowWidth / 2 - windowWidth / 10, 2000);
 
+        CustomGraphics helpButton = new CustomGraphics(this.getClass().getResourceAsStream("../graphics/question_mark.png"), 50.0, 50.0, 1.0);
+        helpButton.setTranslateX(25);
+        helpButton.setTranslateY(25);
+
         LoadListView list = new LoadListView(windowWidth, windowHeigth, button_3);
 
-        buttons.getChildren().addAll(button_1, button_2, button_3, back);
+        buttons.getChildren().addAll(button_1, button_2, button_3, back, helpButton);
 
         button_1.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent arg0) {
                 thisObj.gridScene.setEffect(new BoxBlur());
                 graphics.getChildren().remove(title);
-                buttons.getChildren().removeAll(button_1, button_2, button_3, back);
+                buttons.getChildren().removeAll(button_1, button_2, button_3, back, helpButton);
                 startRandomSession(thisObj);
             }
             
@@ -186,7 +199,7 @@ public class MainMenuGUI extends Pane{
             public void handle(MouseEvent arg0) {
                 thisObj.gridScene.setEffect(new BoxBlur());
                 graphics.getChildren().remove(title);
-                buttons.getChildren().removeAll(button_1, button_2);
+                buttons.getChildren().removeAll(button_1, button_2, helpButton);
                 list.disableButton();
                 thisObj.getChildren().add(list);
                 list.setAlignment(Pos.CENTER);
@@ -209,7 +222,7 @@ public class MainMenuGUI extends Pane{
             @Override
             public void handle(MouseEvent arg0) {
                 if (button_3.getText() == "Download") {
-                    buttons.getChildren().removeAll(button_1, button_2, button_3, back);
+                    buttons.getChildren().removeAll(button_1, button_2, button_3, back, helpButton);
                     createThemeButtons();
                     downloadDictionaryAnimation();
                 }
@@ -223,9 +236,24 @@ public class MainMenuGUI extends Pane{
                     graphics.getChildren().add(title);
                 }
                 thisObj.getChildren().remove(list);
-                buttons.getChildren().removeAll(button_1, button_2, button_3, back);
+                buttons.getChildren().removeAll(button_1, button_2, button_3, back, helpButton);
                 createMainMenuButtons();
                 mainMenuFadeInAnimation();
+            }
+        });
+
+        helpButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent arg0) {
+                thisObj.getChildren().add(helpBox);
+            }
+        });
+        helpButton.setOnMouseExited(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent arg0) {
+                thisObj.getChildren().remove(helpBox);
             }
         });
     }
@@ -370,8 +398,8 @@ public class MainMenuGUI extends Pane{
                 button_3.revertToDefault();
                 button_4.revertToDefault();
                 button_5.revertToDefault();
-                createNewGameButtons();
-                newGameMenuAnimation();
+                createMainMenuButtons();
+                mainMenuFadeInAnimation();
             }
             
         });
