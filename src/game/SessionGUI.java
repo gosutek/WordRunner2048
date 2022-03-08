@@ -445,7 +445,6 @@ public class SessionGUI extends GridPane {
             @Override
             public void handle(KeyEvent arg0) {
                 if (arg0.getCode() == KeyCode.ENTER) {
-                    System.out.println(session.getHiddenWord().toString());
                     /* Correct input */
                     if(session.nextState(input.getText(), userLetterSelection)) {
                         updateGuessWordLabel(input.getText(), userLetterSelection);
