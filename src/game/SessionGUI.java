@@ -1,6 +1,12 @@
 package game;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.util.regex.Pattern;
+
+
+import org.json.*;
 
 import dictionary.Dictionary;
 import dictionary.Word;
@@ -23,7 +29,6 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.effect.BoxBlur;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -70,7 +75,6 @@ public class SessionGUI extends GridPane {
 
         leftPane = new VBox(10);
         rightPane = new VBox(10);
-        rightPane.getChildren().add(new Label("Past games"));
         guessWordBox = new HBox(10);
         candidateWordBox = new HBox(10);
         userLetterSelection = -1;
@@ -100,9 +104,10 @@ public class SessionGUI extends GridPane {
         detailsPane.add(new Label("7 to 9 letters: " + String.format("%.2f", dictionaryStats[1])  + "%"), 0, 4);
         detailsPane.add(new Label("10 or more letters: " + String.format("%.2f", dictionaryStats[2]) + "%"), 0, 5);
 
-        TreeItem<String> test = new TreeItem<String>("Game1");
-        recordsTree = new TreeView<String>(test);
-
+        TreeItem<String> rootItem = new TreeItem<String>("Past Games");
+        rootItem.setExpanded(true);
+        createRecordsTree(rootItem);
+        recordsTree = new TreeView<String>(rootItem);
         rightPane.getChildren().add(recordsTree);
 
 
@@ -165,6 +170,10 @@ public class SessionGUI extends GridPane {
         updateCandidateWordLabel(userLetterSelection);
     }
 
+    public Button getReturnButton() {
+        return returnButton;
+    }
+
     private void createBottomButtons() {
         button_1 = new Button("Dictionary");
         button_1.setId("session-gui-dictionary");
@@ -202,10 +211,6 @@ public class SessionGUI extends GridPane {
         
     }
 
-    public Button getReturnButton() {
-        return returnButton;
-    }
-
     private void setBottomButtonHandlers() {
 
         button_1.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -239,24 +244,56 @@ public class SessionGUI extends GridPane {
                 changeHangmanGraphics(crossWordGraphics[6]);
             }
         });
+    }
 
+    private void createRecordsTree(TreeItem<String> rootItem) {
+        File recordFile = new File("game_records.json");
+        StringBuilder jsonString = new StringBuilder();
+        try {
+            Scanner stringScanner = new Scanner(recordFile);
+            while(stringScanner.hasNextLine()) {
+                jsonString.append(stringScanner.nextLine());
+            }
+            stringScanner.close();
+        } catch (FileNotFoundException exc) {
+            exc.printStackTrace();
+            jsonString = null;
+        }
+        JSONObject mainObj = (JSONObject) new JSONTokener(jsonString.toString()).nextValue();
+        JSONArray recordsArr = mainObj.getJSONArray("records");
+        String datetime;
+        for (int i = 0; i < recordsArr.length(); i++) {
+            JSONObject currObj = recordsArr.getJSONObject(i);
+            datetime = currObj.getString("datetime");
+            datetime = datetime.replaceAll("\\.[0-9]+", ""); 
+            TreeItem<String> datetimeItem = new TreeItem<String>(datetime);
+
+            TreeItem<String> outcomeItem = new TreeItem<String>("Outcome: " + currObj.getString("outcome"));
+            TreeItem<String> hiddenWordItem = new TreeItem<String>("Hidden word: " + currObj.getString("hidden-word"));
+            TreeItem<String> triesItem = new TreeItem<String>("#Tries: " + currObj.getString("number-of-tries"));
+            TreeItem<String> scoreItem = new TreeItem<String>("Score: " + Integer.toString(currObj.getInt("score")));
+
+            datetimeItem.getChildren().addAll(outcomeItem, hiddenWordItem, triesItem, scoreItem);
+            rootItem.getChildren().add(datetimeItem);
+            
+        }
     }
 
     private void replaceRightPane() {
         ObservableList<Node> cells = this.getChildren();
-        Node targetHbox, targetVBox;
-        targetHbox = targetVBox = null;
+        Node targetHbox, targetTreeView;
+        targetHbox = targetTreeView = null;
         for (Node elem : cells) {
             int row = GridPane.getRowIndex(elem);
             int column = GridPane.getColumnIndex(elem);
             if (elem instanceof HBox && row == 1 && column == 2) {
                 targetHbox = elem;
-            } else if (elem instanceof VBox && row == 1 && column == 2) {
-                targetVBox = elem;
+            } else if (elem instanceof TreeView && row == 1 && column == 2) {
+                targetTreeView = elem;
             }
         }
         if (targetHbox == null) {
-            this.getChildren().remove(targetVBox);
+            this.getChildren().remove(targetTreeView);
             this.add(candidateWordBox, 2, 1);
             candidateWordBox.setAlignment(Pos.CENTER);
             button_1.setDisable(false);
@@ -265,7 +302,7 @@ public class SessionGUI extends GridPane {
             returnButton.setDisable(false);
         } else {
             this.getChildren().remove(targetHbox);
-            this.add(rightPane, 2, 1);
+            this.add(recordsTree, 2, 1);
             button_1.setDisable(true);
             button_3.setDisable(true);
             userInput.setDisable(true);

@@ -3,10 +3,8 @@ package game;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -16,7 +14,6 @@ public class Game extends Application {
     private final float windowWidth = 1600;
     private final float windowHeigth = 900;
     private MainMenuGUI mainMenuGUI;
-    private SessionGUI sessionGUI;
 
 
     @Override
