@@ -313,6 +313,11 @@ public class MainMenuGUI extends Pane{
 
         this.button_4 = new CustomButton("Fantasy", windowWidth / 2 - windowWidth / 10, 2000);
 
+        button_1.setDisable(true);
+        button_2.setDisable(true);
+        button_3.setDisable(true);
+        button_4.setDisable(true);
+
         this.button_5 = new CustomButton("Custom", windowWidth / 2 - windowWidth / 10, 2000);
 
 
@@ -507,11 +512,26 @@ public class MainMenuGUI extends Pane{
                 String errorMessage = subjectTask.getValue().getSession().getDictionary().getErrorMessage();
                 if (errorMessage != null) {
                     feedback.setText(errorMessage + "\n Aborting...");
+                    Timeline abortTimeline = new Timeline(
+                        new KeyFrame(Duration.ZERO, new KeyValue(feedback.opacityProperty(), feedback.getOpacity())),
+                        new KeyFrame(new Duration(4000), new KeyValue(feedback.opacityProperty(), 0))
+                    );
+                    abortTimeline.play();
+                    abortTimeline.setOnFinished(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent arg0) {
+                            graphics.getChildren().add(title);
+                            buttons.getChildren().removeAll(feedback);
+                            createThemeButtons();
+                            downloadDictionaryAnimation();
+                        }
+                    });
                 } else {
                     feedback.setText("Chosen book: " + subjectRequester.getResults()[1]);
                     Timeline loadingOnSucceedAnimation = new Timeline(
                         new KeyFrame(Duration.ZERO, new KeyValue(feedback.opacityProperty(), feedback.getOpacity())),
-                        new KeyFrame(new Duration(2000), new KeyValue(feedback.opacityProperty(), 0))
+                        new KeyFrame(new Duration(4000), new KeyValue(feedback.opacityProperty(), 0))
                     );
                     loadingOnSucceedAnimation.play();
                     loadingOnSucceedAnimation.setOnFinished(new EventHandler<ActionEvent>() {
@@ -543,12 +563,11 @@ public class MainMenuGUI extends Pane{
                         downloadDictionaryAnimation();
                     }
                 });
-                newGameMenuAnimation();
             }
         });
 
     }
-    
+
     private void startRandomSession(MainMenuGUI thisObj) {
 
         File directory = new File("./dictionaries");
@@ -633,13 +652,21 @@ public class MainMenuGUI extends Pane{
             public void handle(WorkerStateEvent t) {
                 graphics.getChildren().remove(title);
                 buttons.getChildren().removeAll(customIDBox, back);
-                thisObj.getChildren().add(customTask.getValue());
-                setBackButtonHandlers(customTask.getValue(), customTask.getValue().getReturnButton());
+                if (customTask.getValue() != null) {
+                    thisObj.getChildren().add(customTask.getValue());
+                    setBackButtonHandlers(customTask.getValue(), customTask.getValue().getReturnButton());
+                } else {
+                    graphics.getChildren().add(title);
+                    createThemeButtons();
+                    downloadDictionaryAnimation();
+                }
             }
         });
         customTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent evt) {
+                createThemeButtons();
+                downloadDictionaryAnimation();
             }
         });
 

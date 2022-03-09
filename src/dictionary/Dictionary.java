@@ -151,6 +151,10 @@ public class Dictionary {
         * converts to uppercase
         * splits at whitespace
         */
+        if (text == null) {
+            errorMessage = "Selected dictionary had no description";
+            return null;
+        }
         String[] formattedText = text.replaceAll("\\W", " ").replaceAll("\\s", "\n")
         .replaceAll("_", " ").toUpperCase().split("\\s");
         ArrayList<Word> resultsWords = new ArrayList<Word>();
@@ -204,7 +208,7 @@ public class Dictionary {
         } catch (ArithmeticException | ErrorHandler.UnbalancedException
                 | ErrorHandler.UndersizeException exc) {
             exc.printStackTrace();
-            errorMessage = exc.getStackTrace().toString();
+            errorMessage = exc.getMessage();
         }
         return resultsWords.toArray(new Word[resultsWords.size()]);
     }
