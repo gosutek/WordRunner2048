@@ -8,6 +8,10 @@ import java.util.Scanner;
 
 import org.json.*;
 
+/**
+ * Saves game records on game_records.json
+ */
+
 public class RecordGame {
 
     private final String dateTime;
@@ -16,7 +20,7 @@ public class RecordGame {
 
     public RecordGame(String hiddenWord, String outcome, int numberOfTries, int score) {
 
-        dateTime = java.time.LocalDateTime.now().toString().replaceAll("T", " ");
+        dateTime = java.time.LocalDateTime.now().toString().replaceAll("T", " "); // java.time.LocalDateTime output is of the form {DATE}T{TIME}.
         jsonObject.put("hidden-word", hiddenWord);
         jsonObject.put("outcome", outcome);
         jsonObject.put("number-of-tries", ((Integer) numberOfTries).toString());

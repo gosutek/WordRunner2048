@@ -3,6 +3,10 @@ package gui;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 
+/**
+ * {@code Button} subclass for implementing the buttons of the GUI.
+ */
+
 public class CustomButton extends Button {
     private final CustomGraphics buttonGraphics = new CustomGraphics(this.getClass().getResourceAsStream("graphics/button.png"), 300, 300, 0.7);
     private final double defaultWidth, defaultHeight;

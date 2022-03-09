@@ -75,7 +75,7 @@ public class MainMenuGUI extends Pane{
         this.getChildren().add(graphics);
 
     }
-
+    /* Used by the animted grid */
     private PerspectiveCamera createCamera() {
         PerspectiveCamera camera = new PerspectiveCamera(false);
         camera.getTransforms().addAll(
@@ -84,7 +84,7 @@ public class MainMenuGUI extends Pane{
         );
         return camera;
     }
-
+    /* Title graphics */
     private void createGraphics() {
 
         this.title = new CustomGraphics(this.getClass().getResourceAsStream("graphics/title_icon.png"), 800.0, 801.0, 1.0);
@@ -462,7 +462,7 @@ public class MainMenuGUI extends Pane{
             }
         });
     }
-
+    /* GET request task */
     private void loadingSubject(MainMenuGUI thisObj, SubjectRequester subjectRequester, WorksRequester worksRequester, String subject, Label feedback) {
         Task<SessionGUI> subjectTask = new Task<SessionGUI>() {
 
@@ -548,7 +548,7 @@ public class MainMenuGUI extends Pane{
         });
 
     }
-
+    
     private void startRandomSession(MainMenuGUI thisObj) {
 
         File directory = new File("./dictionaries");

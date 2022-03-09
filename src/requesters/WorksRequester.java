@@ -9,6 +9,12 @@ import java.io.IOException;
 
 import org.json.*;
 
+/**
+ * Performs a GET request to the openlibrary.org/works API.
+ * Extends abstract class {@link requesters.Requester Requester}
+ * @see requesters.Requester
+ */
+
 public class WorksRequester extends Requester {
     private String[] results = new String[2];
 

@@ -21,7 +21,7 @@ public class Game extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        File dictionaryFile = new File("dictionaries");
+        File dictionaryFile = new File("dictionaries"); // ensures that a dictionary folder exists.
         if(!dictionaryFile.exists()) {
             dictionaryFile.mkdir();
         }
@@ -35,7 +35,7 @@ public class Game extends Application {
 
         stage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
         stage.setScene(startScene);
-        stage.setResizable(false);
+        stage.setResizable(false); // fullscreen break positioning therefore disallowed for now.
         startScene.getStylesheets().add(Game.class.getResource("Game.css").toExternalForm());
         stage.show();
     }
@@ -43,7 +43,7 @@ public class Game extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
+    /* Listens for a click while on the title screen. */
     private void startTitleScreenEventListeners(MainMenuGUI mainMenuGUI, Scene startScene) {
         final EventHandler<MouseEvent> titleScreenEventHandler = new EventHandler<MouseEvent>() {
 

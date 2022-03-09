@@ -6,6 +6,10 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * {@code ImageView} of the graphics wrapped in a {@code Group}
+ */
+
 class CustomGraphics extends Group {
     
     CustomGraphics(InputStream URL, double fitWidth, double fitHeight, double opacity) {

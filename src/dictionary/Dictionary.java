@@ -26,13 +26,24 @@ public class Dictionary {
 
     public Dictionary(){};
 
+    /**
+     * Used for loading a local dictionary.
+     * @param dictionary the {@code File} object of the dictionary. Path must be ./dictionaries/hangman_{dictionaryID}.txt
+     */
+
     public Dictionary(File dictionary) {
-        dictionaryID = dictionary.getName().replace("hangman_", "").replace(".txt", "");
+        dictionaryID = dictionary.getName().replace("hangman_", "").replace(".txt", ""); // hangman_ + dictionaryID(ex.OL77795W) + .txt
         pathToDictionary = "./dictionaries/hangman_" + dictionaryID + ".txt";
-        dictionaryBook = "null";
+        dictionaryBook = "null"; // local dictionary files dont keep track of book names.
         dictionaryContents = readExistingDictionary(dictionary);
         numberOfWords = dictionaryContents.length;
     }
+
+    /**
+     * Used for loading a remote dictionary.
+     * @param url the works ID for requesting the openlibrary.org/works API. Typically provided by user or by the {@code SubjectRequester}.
+     * @see requesters.SubjectRequester
+     */
 
     public Dictionary(String url) {
         url = "https://openlibrary.org" + url + ".json";
@@ -53,6 +64,12 @@ public class Dictionary {
         }
 
     }
+
+    /**
+     * dictionaryStatistics[0] = % of 6 letter words
+     * dictionaryStatistics[1] = % of 7 to 9 letter words
+     * dictinaryStatistics[2] = % of 10 or more letter words
+     */
 
     public float[] getDictionaryStatistics() {
         return dictionaryStatistics;
@@ -91,6 +108,11 @@ public class Dictionary {
         return dictionaryObj.toString();
     }
 
+    /**
+     * Creates .txt file at ./dictionaries/FILE_PATH
+     * @param dictionaryFile the {@code File} object of the dictionary
+     */
+
     private void createDictionary(File dictionaryFile) {
 
         try {
@@ -103,7 +125,7 @@ public class Dictionary {
 
             FileWriter dictionaryWriter = new FileWriter(dictionaryFile);
             for (Word word : dictionaryContents) {
-                dictionaryWriter.write(word + "\n");
+                dictionaryWriter.write(word + "\n"); // each word will be followed by a \n
             }
             dictionaryWriter.close();
 
@@ -112,8 +134,24 @@ public class Dictionary {
         }
     }
 
+    /**
+     * Parses the openlibrary.org/works API response for exceptions and statistic calculation.
+     * @param text the raw {@code String} parsed with org.json.
+     * @return array of dictionary.Word containing the filtered and formatted words of the dictionary.
+     * @throws ErrorHandler.InvalidCountException if the method finds a duplicate word while parsing.
+     * @throws ErrorHandler.BannedWordException if the method find a predefined banned word while parsing.
+     * @see org.json
+     * @see dictionary.Word
+     */
+
     private Word[] parseDictionary(String text) {
-        String[] formattedText = text.replaceAll("\\W", "\s").replaceAll("\\s", "\n")
+        /* Replaces all non word characters with a whitespace
+        * all whitespaces with a new line 
+        * all underscores with a whitespace
+        * converts to uppercase
+        * splits at whitespace
+        */
+        String[] formattedText = text.replaceAll("\\W", " ").replaceAll("\\s", "\n")
         .replaceAll("_", " ").toUpperCase().split("\\s");
         ArrayList<Word> resultsWords = new ArrayList<Word>();
         HashSet<String> dupSet = new HashSet<String>(); /* Checks for dups */
@@ -149,7 +187,7 @@ public class Dictionary {
                 resultsWords.add(new Word(word));
 
             } catch (ErrorHandler.InvalidRangeException | ErrorHandler.InvalidCountException | ErrorHandler.BannedWordException exc) {
-                continue;
+                continue; // just skips the word and does not add it to the dictionary.
             }
         }
         numberOfWords = resultsWords.size();
@@ -170,7 +208,10 @@ public class Dictionary {
         }
         return resultsWords.toArray(new Word[resultsWords.size()]);
     }
-
+    /**
+     * @param dictionaryFile the {@code File} to read.
+     * @return a array of dictionary.Word of the dictionary
+     */
     private Word[] readExistingDictionary(File dictionaryFile) {
         List<Word> wordList = new ArrayList<Word>();
         int sixLetterWords, sevenToNineLetterWords, tenOrMoreLetterWords;
@@ -196,6 +237,12 @@ public class Dictionary {
         }
         return wordList.toArray(new Word[wordList.size()]);
     }
+
+    /**
+     * @param sixLetterWords the number of words with exactly 6 letters.
+     * @param sevenToNineLetterWords the number of words with 7 to 9 letters.
+     * @param tenOrMoreLetterWords the number of words with 10 or more letters.
+     */
 
     private void calcDictionaryStatistics(int sixLetterWords, int sevenToNineLetterWords, int tenOrMoreLetterWords) {
         dictionaryStatistics[0] = ((float) sixLetterWords / numberOfWords) * 100;

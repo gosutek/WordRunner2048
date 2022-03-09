@@ -1,5 +1,10 @@
 package dictionary;
 
+/**
+ * Used with the dictionary.Word class to keep track of letters in a word. Basically extends the {@code String} class.
+ * @see dictionary.Word
+ */
+
 public class Letter {
     
     private String value;
@@ -21,5 +26,4 @@ public class Letter {
     public String value() {
         return value;
     }
-
 }

@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
-
+/**
+ * Handles the current game session (game logic).
+ */
 
 public class Session {
     private Dictionary activeDictionary;
@@ -58,7 +60,7 @@ public class Session {
     public Word getHiddenWord() {
         return hiddenWord;
     }
-
+    /* Calculates the new probabilities of the letters after the user input. */
     public void calcProb() {
         probs.clear();
         for (int i = 0; i < hiddenWord.length(); i++) {     //For letter at position 0
@@ -76,9 +78,9 @@ public class Session {
             probs.add(mapProbs);
         }
     }
-    /*
+    /**
      * Method that updates the candidate set, based on the users chosen letter at a posistion(pos).
-     * Returns true if the guess was correct and false when not.
+     * @return {@code true} if the guess was correct and {@code false} when not.
      */
     private boolean updateCandidates(String chosenLetter, int pos) {
         if(hiddenWord.getLetters()[pos].value().equals(chosenLetter)) {  // correct choice
@@ -103,7 +105,10 @@ public class Session {
             return false;
         }
     }
-
+    /**
+     * @param pos indicates the position for which to find the candidate letters.
+     * @return array of string the candidate letters.
+     */
     public String[] getCandidateLetters(int pos) {
         Object[] candidateLettersObj = probs.get(pos).keySet().toArray();
         String[] candidateLettersArr = new String[candidateLettersObj.length];
@@ -115,10 +120,21 @@ public class Session {
         return candidateLettersArr;
     }
 
+    /**
+     * Initializes the guessWord with underscores(_).
+     */
+
     public Word initialize() {
         guessWord = new Word(hiddenWord.toString().replaceAll("[A-Z]", "_"));
         return guessWord;
     }
+
+    /**
+     * Calculates the next state for given input and pos.
+     * @param input the user input.
+     * @param pos position of input.
+     * @return {@code true} for a correct guess and {@code false} for a wrong one.
+     */
 
     public boolean nextState(String input, int pos) {
         tries++;

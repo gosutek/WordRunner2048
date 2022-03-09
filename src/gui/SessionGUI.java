@@ -44,7 +44,6 @@ import javafx.util.Duration;
 public class SessionGUI extends GridPane {
     
     private final float windowWidth = 1600;
-    //windowHeight = 900
 
     private Session session;
     private String outcome;
@@ -280,6 +279,7 @@ public class SessionGUI extends GridPane {
         }
     }
 
+    /* Switches between game records and letter hints */
     private void replaceRightPane() {
         ObservableList<Node> cells = this.getChildren();
         Node targetHbox, targetTreeView;
@@ -311,6 +311,7 @@ public class SessionGUI extends GridPane {
         }
     }
 
+    /* Switches between the dictionary details and the guess word label */
     private void replaceLeftPane() {
         ObservableList<Node> cells = this.getChildren();
         Node targetVBox, targetGridPane;
@@ -494,6 +495,7 @@ public class SessionGUI extends GridPane {
         });
     }
 
+    /* Automatically select next available guess word position */
     private void selectNextSpace() {
         if (userLetterSelection < guessWordLabelArray.length - 1) {
             guessWordBox.getChildren().forEach(elem -> elem.setStyle(null));

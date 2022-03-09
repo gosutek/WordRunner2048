@@ -13,6 +13,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 
+/**
+ * Implements the list for loading a dictionary.
+ */
+
 public class LoadListView extends GridPane {
 
     private final File dictionaryDir = new File("./dictionaries");
@@ -41,6 +45,7 @@ public class LoadListView extends GridPane {
         setSelectionListener(loadButton);
     }
 
+    /* Disables the load button if not selection is made */
     private void setSelectionListener(Button loadButton) {
         list.getSelectionModel().selectedItemProperty().addListener(
             new ChangeListener<String>() {

@@ -10,6 +10,14 @@ import java.io.IOException;
 
 import org.json.*;
 
+/**
+ * Performs a GET request to the openlibrary.org/subject API with a static work limit query.
+ * Randomly selects a work ID from the response which is typically used as input for the {@link requesters.WorksRequester WorksRequester}.
+ * Extends abstract class {@link requesters.Requester Requester}
+ * @see requesters.Requester
+ * @see requesters.WorksRequester
+ */
+
 public class SubjectRequester extends Requester {
 
     private String[] resultURL = new String[2];

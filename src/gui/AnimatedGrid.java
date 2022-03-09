@@ -12,6 +12,11 @@ import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
 
+/**
+ * Implements a {@code Group} with a {@code MeshView} of a {@code TriangleMesh} as a child.
+ * The grid is animated by transforming the {@code TriangleMesh}'s Z points with a function using a random point from a normal distribution
+ */
+
 class AnimatedGrid extends Group {
     
     private final int gridWidth, gridHeight, cell_size;
@@ -186,7 +191,9 @@ class AnimatedGrid extends Group {
                 }
             }
         }
-
+        /**
+         * Calculates the Z points of the grid's vertices ascending animation for the next frame.
+         */
         public float[] nextPointUp() {
             final int numOfPoints = (gridWidth / cell_size + 1) * (gridHeight / cell_size + 1);
             final float[] vertices = new float[numOfPoints * 3]; /* 3 coords for each point */
@@ -201,6 +208,11 @@ class AnimatedGrid extends Group {
             }
             return vertices;
         }
+
+        /**
+         * Calulates the Z points of the grid's vertices descending animation for the next frame.
+         */
+
         public float[] nextPointDown() {
             final int numOfPoints = (gridWidth / cell_size + 1) * (gridHeight / cell_size + 1);
             final float[] vertices = new float[numOfPoints * 3]; /* 3 coords for each point */
