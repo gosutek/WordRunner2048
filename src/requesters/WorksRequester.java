@@ -19,14 +19,17 @@ public class WorksRequester extends Requester {
     private String[] results = new String[2];
 
     /**
-     * 
+     * @param reqURL Must be of the form "https://openlibrary.org" + worksID + ".json"
+     * @return An array of strings of size 2. Where [0] is the works title and [1] is the description
+     * @throws IOException When end of input is reached
+     * @throws ErrorHandler.ConnectionException When the http request returns a code other than 200.
+     * @see ErrorHandler.ConnectionException
      */
 
     @Override
     public String[] readFromURL(String reqURL) throws IOException, ErrorHandler.ConnectionException {
         String scanResults = new String();
 
-        //reqURL = "https://openlibrary.org" + reqURL + ".json";
         URL url = new URL(reqURL);
         System.out.println(reqURL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();

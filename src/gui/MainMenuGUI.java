@@ -462,7 +462,10 @@ public class MainMenuGUI extends Pane{
             }
         });
     }
-    /* GET request task */
+    /**
+     * Creates a task for a new thread. Performs a GET request to the openlibrary.org/subjects API and then picks a random works ID for which
+     * it requests its contents from the openlibrary.org/works API.
+     */
     private void loadingSubject(MainMenuGUI thisObj, SubjectRequester subjectRequester, WorksRequester worksRequester, String subject, Label feedback) {
         Timeline loadingAnimation = new Timeline(
             new KeyFrame(new Duration(1000), new KeyValue(feedback.textProperty(), "Establishing connection...Please Wait.")),
@@ -538,6 +541,10 @@ public class MainMenuGUI extends Pane{
 
     }
 
+    /**
+     * Creates a task for a new thread. The task implements the function of picking a random dictionary from local storage.
+     */
+
     private void startRandomSession(MainMenuGUI thisObj) {
 
         File directory = new File("./dictionaries");
@@ -587,6 +594,11 @@ public class MainMenuGUI extends Pane{
         });
 
     }
+
+    /**
+     * Creates a task for a new thread. Implements the function of requesting the worksID provided by the user
+     * from the openlibrary.org/works API.
+     */
 
     private void startCustomSession(MainMenuGUI thisObj, String workKey, HBox customIDBox, Label feedback) {
         Timeline loadingAnimation = new Timeline(
@@ -649,7 +661,11 @@ public class MainMenuGUI extends Pane{
             }
         });
     }
-
+    /**
+     * Creates a task for a new thread. Implements the function of loading a local dictionary from ./dictionaries.
+     * @param thisObj The main GUI object.
+     * @param dictionaryID The Id of the dictionary to load.
+     */
     private void startLoadingSequence(MainMenuGUI thisObj, String dictionaryID) {
 
         Task<SessionGUI> loadTask = new Task<SessionGUI>() {

@@ -2,6 +2,8 @@ package gui;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -249,6 +251,17 @@ public class SessionGUI extends GridPane {
 
     private void createRecordsTree(TreeItem<String> rootItem) {
         File recordFile = new File("game_records.json");
+        if (!recordFile.exists()) {
+            try {
+                recordFile.createNewFile();
+                FileWriter jsonCreator = new FileWriter(recordFile);
+                jsonCreator.write("{records:[]}");
+                jsonCreator.close();
+            } catch (IOException exc) {
+                exc.printStackTrace();
+                return;
+            }
+        }
         StringBuilder jsonString = new StringBuilder();
         try {
             Scanner stringScanner = new Scanner(recordFile);
