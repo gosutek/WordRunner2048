@@ -240,6 +240,7 @@ public class SessionGUI extends GridPane {
                 button_1.setDisable(true);
                 button_2.setDisable(true);
                 button_3.setDisable(true);
+                gameOverLabel.setText("Game Over");
                 gameOverLabel.setOpacity(1);
                 changeHangmanGraphics(crossWordGraphics[6]);
             }

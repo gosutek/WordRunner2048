@@ -21,7 +21,6 @@ public class Dictionary {
     private String pathToDictionary, dictionaryBook, dictionaryID;
     private Word[] dictionaryContents;
     private float[] dictionaryStatistics = new float[3];
-    private String errorMessage = null;
     private final Set<String> bannedWordsSet = Set.<String>of("OPENLIBRARY");
 
     public Dictionary(){};
@@ -45,20 +44,22 @@ public class Dictionary {
      * @see requesters.SubjectRequester
      */
 
-    public Dictionary(String url) {
+    public Dictionary(String url) throws ErrorHandler.InvalidDictionary {
         url = "https://openlibrary.org" + url + ".json";
         dictionaryID = url.replace("https://openlibrary.org/works/", "").replace(".json", "");
         pathToDictionary = "./dictionaries/hangman_" + dictionaryID + ".txt";
-
         File dictionaryFile = new File(pathToDictionary);
+
         if (!dictionaryFile.exists()) {
-            WorksRequester worksRequester = new WorksRequester();
-            String[] results = worksRequester.readFromURL(url);
-            dictionaryBook = results[0];
-            dictionaryContents = parseDictionary(results[1]); // this sets words and letters
-            if (dictionaryContents != null) {
-                createDictionary(dictionaryFile);
+            try {
+                WorksRequester worksRequester = new WorksRequester();
+                String[] results = worksRequester.readFromURL(url);
+                dictionaryBook = results[0];
+                dictionaryContents = parseDictionary(results[1]); // this sets words and letters
+            } catch (IOException | ErrorHandler.ConnectionException | ErrorHandler.DictionaryParsingException exc) {
+                throw new ErrorHandler.InvalidDictionary(exc.getMessage());
             }
+            createDictionary(dictionaryFile);
         } else {
             dictionaryContents = readExistingDictionary(dictionaryFile);
         }
@@ -73,10 +74,6 @@ public class Dictionary {
 
     public float[] getDictionaryStatistics() {
         return dictionaryStatistics;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
     }
 
     public int getWords() {
@@ -138,13 +135,11 @@ public class Dictionary {
      * Parses the openlibrary.org/works API response for exceptions and statistic calculation.
      * @param text the raw {@code String} parsed with org.json.
      * @return array of dictionary.Word containing the filtered and formatted words of the dictionary.
-     * @throws ErrorHandler.InvalidCountException if the method finds a duplicate word while parsing.
-     * @throws ErrorHandler.BannedWordException if the method find a predefined banned word while parsing.
      * @see org.json
      * @see dictionary.Word
      */
 
-    private Word[] parseDictionary(String text) {
+    private Word[] parseDictionary(String text) throws ErrorHandler.DictionaryParsingException {
         /* Replaces all non word characters with a whitespace
         * all whitespaces with a new line 
         * all underscores with a whitespace
@@ -152,8 +147,7 @@ public class Dictionary {
         * splits at whitespace
         */
         if (text == null) {
-            errorMessage = "Selected dictionary had no description";
-            return null;
+            throw new ErrorHandler.DictionaryParsingException("Malformed JSON");
         }
         String[] formattedText = text.replaceAll("\\W", " ").replaceAll("\\s", "\n")
         .replaceAll("_", " ").toUpperCase().split("\\s");
@@ -208,7 +202,7 @@ public class Dictionary {
         } catch (ArithmeticException | ErrorHandler.UnbalancedException
                 | ErrorHandler.UndersizeException exc) {
             exc.printStackTrace();
-            errorMessage = exc.getMessage();
+            throw new ErrorHandler.DictionaryParsingException(exc.getMessage());
         }
         return resultsWords.toArray(new Word[resultsWords.size()]);
     }

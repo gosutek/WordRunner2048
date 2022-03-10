@@ -47,4 +47,18 @@ public abstract class ErrorHandler extends Exception{
         }
     }
 
+    public static class InvalidDictionary extends ErrorHandler {
+
+        public InvalidDictionary(String str) {
+            super(str);
+        }
+    }
+
+    public static class DictionaryParsingException extends ErrorHandler {
+
+        public DictionaryParsingException(String str) {
+            super(str);
+        }
+    }
+
 }

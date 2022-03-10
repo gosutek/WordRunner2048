@@ -28,7 +28,6 @@ public class SubjectRequester extends Requester {
         String scanResults = new String();
 
         try {
-            System.out.println("Requesting subject...");
             URL url = new URL("https://openlibrary.org/subjects/" + subject + ".json?limit=" + workLimit);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -67,5 +66,5 @@ public class SubjectRequester extends Requester {
     public String[] getResults() {
         return resultURL;
     }
-    
+
 }

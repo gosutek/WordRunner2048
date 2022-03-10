@@ -2,6 +2,7 @@ package gui;
 
 import requesters.SubjectRequester;
 import requesters.WorksRequester;
+import utils.ErrorHandler;
 
 import java.io.File;
 import java.util.Random;
@@ -285,7 +286,6 @@ public class MainMenuGUI extends Pane{
         Label feedback = new Label("Establishing connection...Please Wait...");
         feedback.setId("feedback_1");
 
-        feedback.setOpacity(0);
 
         Label customIDLabel = new Label("Enter custom ID(ENTER):");
         TextField customIDTextField = new TextField();
@@ -297,7 +297,6 @@ public class MainMenuGUI extends Pane{
         customIDBox.getChildren().addAll(customIDLabel, customIDTextField);
         customIDBox.setTranslateX(windowWidth / 2 - windowWidth / 4);
         customIDBox.setTranslateY(500);
-        customIDBox.setOpacity(0);
 
         Label themeLabel = new Label("Please select a theme");
         themeLabel.setTranslateX(windowWidth / 2 - windowWidth / 5);
@@ -313,15 +312,9 @@ public class MainMenuGUI extends Pane{
 
         this.button_4 = new CustomButton("Fantasy", windowWidth / 2 - windowWidth / 10, 2000);
 
-        button_1.setDisable(true);
-        button_2.setDisable(true);
-        button_3.setDisable(true);
-        button_4.setDisable(true);
-
         this.button_5 = new CustomButton("Custom", windowWidth / 2 - windowWidth / 10, 2000);
 
-
-        buttons.getChildren().addAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back, feedback, customIDBox);
+        buttons.getChildren().addAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back);
 
         button_1.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -366,7 +359,7 @@ public class MainMenuGUI extends Pane{
 
             @Override
             public void handle(MouseEvent arg0) {
-                graphics.getChildren().removeAll(title);
+                graphics.getChildren().remove(title);
                 buttons.getChildren().removeAll(themeLabel, button_1, button_2, button_3, button_4, button_5, back);
                 
                 loadingSubject(thisObj, new SubjectRequester(), new WorksRequester(), "fantasy", feedback);
@@ -379,15 +372,17 @@ public class MainMenuGUI extends Pane{
 
             @Override
             public void handle(MouseEvent arg0) {
-                customIDBox.setOpacity(1);
                 buttons.getChildren().removeAll(themeLabel, button_1, button_2, button_3, button_4, button_5);
+                buttons.getChildren().add(customIDBox);
                 customIDTextField.getParent().requestFocus();
                 customIDTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
                     @Override
                     public void handle(KeyEvent arg0) {
                         if (arg0.getCode() == KeyCode.ENTER) {
-                            startCustomSession(thisObj, "/works/" + customIDTextField.getText(), customIDBox);
+                            graphics.getChildren().remove(title);
+                            buttons.getChildren().removeAll(customIDBox, back);
+                            startCustomSession(thisObj, "/works/" + customIDTextField.getText(), customIDBox, feedback);
                         }
                     }
                     
@@ -469,6 +464,11 @@ public class MainMenuGUI extends Pane{
     }
     /* GET request task */
     private void loadingSubject(MainMenuGUI thisObj, SubjectRequester subjectRequester, WorksRequester worksRequester, String subject, Label feedback) {
+        Timeline loadingAnimation = new Timeline(
+            new KeyFrame(new Duration(1000), new KeyValue(feedback.textProperty(), "Establishing connection...Please Wait.")),
+            new KeyFrame(new Duration(2000), new KeyValue(feedback.textProperty(), "Establishing connection...Please Wait..")),
+            new KeyFrame(new Duration(3000), new KeyValue(feedback.textProperty(), "Establishing connection...Please Wait..."))
+        );
         Task<SessionGUI> subjectTask = new Task<SessionGUI>() {
 
             @Override
@@ -476,25 +476,13 @@ public class MainMenuGUI extends Pane{
                 SessionGUI sessionGUI;
                 String workKey = new String();
                 Dictionary dictionary;
-                try {
-                    Timeline loadingAnimation = new Timeline(
-                        new KeyFrame(new Duration(1000), new KeyValue(feedback.textProperty(), "Establishing connection...Please Wait.")),
-                        new KeyFrame(new Duration(2000), new KeyValue(feedback.textProperty(), "Establishing connection...Please Wait..")),
-                        new KeyFrame(new Duration(3000), new KeyValue(feedback.textProperty(), "Establishing connection...Please Wait..."))
-                    );
 
-                    loadingAnimation.setCycleCount(Animation.INDEFINITE);
-                    loadingAnimation.play();
-
-                    workKey = subjectRequester.readFromURL(subject)[0];
-                    dictionary = new Dictionary(workKey);
-                    sessionGUI = new SessionGUI(dictionary);
-                    sessionGUI.setViewOrder(-1);
-                    loadingAnimation.stop();
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                    sessionGUI = null;
-                }
+                loadingAnimation.setCycleCount(Animation.INDEFINITE);
+                loadingAnimation.play();
+                workKey = subjectRequester.readFromURL(subject)[0];
+                dictionary = new Dictionary(workKey);
+                sessionGUI = new SessionGUI(dictionary);
+                sessionGUI.setViewOrder(-1);
                 return sessionGUI;
             }
             
@@ -503,62 +491,44 @@ public class MainMenuGUI extends Pane{
         Thread subjectThread = new Thread(subjectTask);
         subjectThread.setDaemon(true);
         subjectThread.start();
-        feedback.setOpacity(1);
+        buttons.getChildren().add(feedback);
 
         subjectTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
             @Override
             public void handle(WorkerStateEvent t) {
-                String errorMessage = subjectTask.getValue().getSession().getDictionary().getErrorMessage();
-                if (errorMessage != null) {
-                    feedback.setText(errorMessage + "\n Aborting...");
-                    Timeline abortTimeline = new Timeline(
-                        new KeyFrame(Duration.ZERO, new KeyValue(feedback.opacityProperty(), feedback.getOpacity())),
-                        new KeyFrame(new Duration(4000), new KeyValue(feedback.opacityProperty(), 0))
-                    );
-                    abortTimeline.play();
-                    abortTimeline.setOnFinished(new EventHandler<ActionEvent>() {
-
-                        @Override
-                        public void handle(ActionEvent arg0) {
-                            graphics.getChildren().add(title);
-                            buttons.getChildren().removeAll(feedback);
-                            createThemeButtons();
-                            downloadDictionaryAnimation();
-                        }
-                    });
-                } else {
-                    feedback.setText("Chosen book: " + subjectRequester.getResults()[1]);
-                    Timeline loadingOnSucceedAnimation = new Timeline(
-                        new KeyFrame(Duration.ZERO, new KeyValue(feedback.opacityProperty(), feedback.getOpacity())),
-                        new KeyFrame(new Duration(4000), new KeyValue(feedback.opacityProperty(), 0))
-                    );
-                    loadingOnSucceedAnimation.play();
-                    loadingOnSucceedAnimation.setOnFinished(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent arg0) {
-                            buttons.getChildren().removeAll(feedback);
-                            thisObj.getChildren().add(subjectTask.getValue());
-                            setBackButtonHandlers(subjectTask.getValue(), subjectTask.getValue().getReturnButton());
-                        }
-                    });
-                }
+                loadingAnimation.stop();
+                feedback.setText("Chosen book: " + subjectRequester.getResults()[1]);
+                Timeline loadingOnSucceedAnimation = new Timeline(
+                    new KeyFrame(Duration.ZERO, new KeyValue(feedback.opacityProperty(), feedback.getOpacity())),
+                    new KeyFrame(new Duration(4000), new KeyValue(feedback.opacityProperty(), 0))
+                );
+                loadingOnSucceedAnimation.play();
+                loadingOnSucceedAnimation.setOnFinished(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent arg0) {
+                        buttons.getChildren().removeAll(feedback);
+                        thisObj.getChildren().add(subjectTask.getValue());
+                        setBackButtonHandlers(subjectTask.getValue(), subjectTask.getValue().getReturnButton());
+                    }
+                });
             }
         });
         subjectTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent evt) {
-                feedback.setText("Problem connecting to openlibrary.org");
-                graphics.getChildren().addAll(title);
+                loadingAnimation.stop();
+                feedback.setText("Error " + subjectTask.getException().getMessage() + "\n Try again...");
                 Timeline loadingOnFailAnimation = new Timeline(
                     new KeyFrame(Duration.ZERO, new KeyValue(feedback.opacityProperty(), feedback.getOpacity())),
-                    new KeyFrame(new Duration(2000), new KeyValue(feedback.opacityProperty(), 0))
-                );
-                loadingOnFailAnimation.play();
-                loadingOnFailAnimation.setOnFinished(new EventHandler<ActionEvent>() {
+                    new KeyFrame(new Duration(4000), new KeyValue(feedback.opacityProperty(), 0))
+                    );
+                    loadingOnFailAnimation.play();
+                    loadingOnFailAnimation.setOnFinished(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent arg0) {
-                        buttons.getChildren().removeAll(feedback);
+                        graphics.getChildren().add(title);
+                        buttons.getChildren().remove(feedback);
                         createThemeButtons();
                         downloadDictionaryAnimation();
                     }
@@ -588,15 +558,10 @@ public class MainMenuGUI extends Pane{
             @Override
             protected SessionGUI call() throws Exception {
                 SessionGUI sessionGUI;
-                try {
-                    File randomDictionaryFile = dirArr[rng.nextInt(dirArr.length)];
-                    Dictionary randomDictionary = new Dictionary(randomDictionaryFile);
-                    sessionGUI = new SessionGUI(randomDictionary);
-                    sessionGUI.setViewOrder(-1);
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                    sessionGUI = null;
-                }
+                File randomDictionaryFile = dirArr[rng.nextInt(dirArr.length)];
+                Dictionary randomDictionary = new Dictionary(randomDictionaryFile);
+                sessionGUI = new SessionGUI(randomDictionary);
+                sessionGUI.setViewOrder(-1);
                 return sessionGUI;
             }
         };
@@ -616,28 +581,32 @@ public class MainMenuGUI extends Pane{
         offlineTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent evt) {
-
+                createNewGameButtons();
+                newGameMenuAnimation();
             }
         });
 
     }
 
-    private void startCustomSession(MainMenuGUI thisObj, String workKey, HBox customIDBox) {
+    private void startCustomSession(MainMenuGUI thisObj, String workKey, HBox customIDBox, Label feedback) {
+        Timeline loadingAnimation = new Timeline(
+                    new KeyFrame(new Duration(1000), new KeyValue(feedback.textProperty(), "Establishing connection...Please Wait.")),
+                    new KeyFrame(new Duration(2000), new KeyValue(feedback.textProperty(), "Establishing connection...Please Wait..")),
+                    new KeyFrame(new Duration(3000), new KeyValue(feedback.textProperty(), "Establishing connection...Please Wait..."))
+                );
 
         Task<SessionGUI> customTask = new Task<SessionGUI>() {
 
             @Override
             protected SessionGUI call() throws Exception {
-                SessionGUI sessionGUI;
+                SessionGUI sessionGUI = null;
                 Dictionary dictionary;
-                try {
-                    dictionary = new Dictionary(workKey);
-                    sessionGUI = new SessionGUI(dictionary);
-                    sessionGUI.setViewOrder(-1);
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                    sessionGUI = null;
-                }
+                loadingAnimation.setCycleCount(Animation.INDEFINITE);
+                loadingAnimation.play();
+                dictionary = new Dictionary(workKey);
+                sessionGUI = new SessionGUI(dictionary);
+                sessionGUI.setViewOrder(-1);
+                
                 return sessionGUI;
             }
         };
@@ -645,31 +614,40 @@ public class MainMenuGUI extends Pane{
         Thread customThread = new Thread(customTask);
         customThread.setDaemon(true);
         customThread.start();
+        buttons.getChildren().add(feedback);
 
         customTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
             @Override
             public void handle(WorkerStateEvent t) {
-                graphics.getChildren().remove(title);
                 buttons.getChildren().removeAll(customIDBox, back);
-                if (customTask.getValue() != null) {
-                    thisObj.getChildren().add(customTask.getValue());
-                    setBackButtonHandlers(customTask.getValue(), customTask.getValue().getReturnButton());
-                } else {
-                    graphics.getChildren().add(title);
-                    createThemeButtons();
-                    downloadDictionaryAnimation();
-                }
+                thisObj.getChildren().add(customTask.getValue());
+                setBackButtonHandlers(customTask.getValue(), customTask.getValue().getReturnButton());
             }
         });
         customTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
             @Override
             public void handle(WorkerStateEvent evt) {
-                createThemeButtons();
-                downloadDictionaryAnimation();
+                loadingAnimation.stop();
+                feedback.setText("Error: " + customTask.getException().getMessage() + "\n Try again with a different 'custom ID'");
+                Timeline feedbackFadeOut = new Timeline(
+                        new KeyFrame(Duration.ZERO, new KeyValue(feedback.opacityProperty(), feedback.getOpacity())),
+                        new KeyFrame(new Duration(4000), new KeyValue(feedback.opacityProperty(), 0))
+                );
+                feedbackFadeOut.play();
+                feedbackFadeOut.setOnFinished(new EventHandler<ActionEvent>() {
+
+                    @Override
+                    public void handle(ActionEvent arg0) {
+                        graphics.getChildren().add(title);
+                        buttons.getChildren().remove(feedback);
+                        createThemeButtons();
+                        downloadDictionaryAnimation();
+                    }
+                });
             }
         });
-
     }
 
     private void startLoadingSequence(MainMenuGUI thisObj, String dictionaryID) {
