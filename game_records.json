@@ -6,6 +6,62 @@
 			"datetime": "2022-03-10 16:11:35.426199367",
 			"hidden-word": "AFRAID",
 			"outcome": "LOST"
+		},
+		{
+			"number-of-tries": "12",
+			"score": 50,
+			"datetime": "2022-03-10 20:00:26.912052640",
+			"hidden-word": "DETECTIVE",
+			"outcome": "WON"
+		},
+		{
+			"number-of-tries": "8",
+			"score": 65,
+			"datetime": "2022-03-10 20:03:19.591630726",
+			"hidden-word": "MYSTERY",
+			"outcome": "WON"
+		},
+		{
+			"number-of-tries": "10",
+			"score": 60,
+			"datetime": "2022-03-10 20:06:21.503360740",
+			"hidden-word": "BROUGHT",
+			"outcome": "WON"
+		},
+		{
+			"number-of-tries": "12",
+			"score": 30,
+			"datetime": "2022-03-10 20:07:45.091677405",
+			"hidden-word": "CHARLES",
+			"outcome": "WON"
+		},
+		{
+			"number-of-tries": "0",
+			"score": 0,
+			"datetime": "2022-03-16 13:30:07.820483",
+			"hidden-word": "FINALLY",
+			"outcome": "LOST"
+		},
+		{
+			"number-of-tries": "0",
+			"score": 0,
+			"datetime": "2022-03-16 13:30:33.789495",
+			"hidden-word": "PROJECT",
+			"outcome": "LOST"
+		},
+		{
+			"number-of-tries": "0",
+			"score": 0,
+			"datetime": "2022-03-16 13:30:58.325613",
+			"hidden-word": "LIBRARY",
+			"outcome": "LOST"
+		},
+		{
+			"number-of-tries": "0",
+			"score": 0,
+			"datetime": "2022-03-16 13:31:18.444279",
+			"hidden-word": "RENCONTRES",
+			"outcome": "LOST"
 		}
 	]
 }

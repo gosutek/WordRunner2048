@@ -29,7 +29,7 @@ public abstract class ErrorHandler extends Exception{
     public static class UnbalancedException extends ErrorHandler {
 
         public UnbalancedException(String book, String percent) {
-            super("Dictionary " + book + " contains " + percent + "% words with less than 9 letters.");
+            super("Dictionary " + book + " contains " + percent + "% words with more than 9 letters.");
         }
     }
 
