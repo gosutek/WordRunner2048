@@ -25,3 +25,4 @@ hs_err_pid*
 /releases/
 /doc/
 .sh
+.txt
