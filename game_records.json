@@ -62,6 +62,27 @@
 			"datetime": "2022-03-16 13:31:18.444279",
 			"hidden-word": "RENCONTRES",
 			"outcome": "LOST"
+		},
+		{
+			"number-of-tries": "12",
+			"score": 45,
+			"datetime": "2022-03-20 02:37:09.660814",
+			"hidden-word": "MEDDLESOME",
+			"outcome": "WON"
+		},
+		{
+			"number-of-tries": "7",
+			"score": 45,
+			"datetime": "2022-03-20 02:38:05.114192",
+			"hidden-word": "SEAMEN",
+			"outcome": "WON"
+		},
+		{
+			"number-of-tries": "0",
+			"score": 0,
+			"datetime": "2022-03-20 02:39:23.648257",
+			"hidden-word": "TREASURE",
+			"outcome": "LOST"
 		}
 	]
 }

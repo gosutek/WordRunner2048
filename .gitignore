@@ -23,6 +23,6 @@
 hs_err_pid*
 
 /releases/
+/dictionary/
 /doc/
 .sh
-.txt
