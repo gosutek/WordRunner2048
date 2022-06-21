@@ -1,7 +1,7 @@
 # WordRunner 2048
 
 ## Overview
-The classic game, Crossword, with a slightly altered gameplay using JavaFX. All the words used, are from the descriptions of books @[openlibrary.org](www.openlibrary.org). Graphics made in Photoshop.
+The classic game, Crossword, with a slightly altered gameplay, made using JavaFX. All the words used, are from the descriptions of books @[openlibrary.org](www.openlibrary.org). Graphics made in Photoshop.
 
 ## Hint System
 For each letter of the hidden word, not yet guessed correctly by the player, a set of 'hint' letters is selected and provided on the GUI. This set contains letters, which belong to words that:
