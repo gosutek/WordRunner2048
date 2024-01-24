@@ -25,4 +25,5 @@ hs_err_pid*
 /releases/
 /dictionary/
 /doc/
+/lib/
 .sh
